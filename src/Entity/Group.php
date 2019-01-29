@@ -3,14 +3,15 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Sonata\UserBundle\Entity\BaseUser;
+use Sonata\UserBundle\Entity\BaseGroup;
 
 /**
  * @ORM\Entity()
+ * @ORM\Table(name="`group`")
  *
  * @author Philip Washington Sorst <philip@sorst.net>
  */
-class User extends BaseUser
+class Group extends BaseGroup
 {
     /**
      * @ORM\Id()
