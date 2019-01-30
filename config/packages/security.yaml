@@ -28,6 +28,7 @@ security:
                 use_forward:    false
                 check_path:     /admin/login_check
                 failure_path:   null
+                default_target_path: sonata_admin_dashboard
             logout:
                 path:           /admin/logout
                 target:         /admin/login

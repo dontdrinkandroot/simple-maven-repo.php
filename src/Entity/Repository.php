@@ -22,8 +22,12 @@ class Repository
     private $id;
 
     /**
-     * @ORM\Column(type="string", nullable=false)
+     * @ORM\Column(type="string", nullable=false, unique=true)
      * @Assert\NotBlank()
+     * @Assert\Regex(
+     *     pattern="/^[a-z0-9_-]+$/",
+     *     message="Only lowercase letters, numbers, dashes or underscores permitted"
+     * )
      *
      * @var string
      */
@@ -99,5 +103,10 @@ class Repository
     public function setVisible(bool $visible): void
     {
         $this->visible = $visible;
+    }
+
+    public function isNew()
+    {
+        return null === $this->id;
     }
 }
