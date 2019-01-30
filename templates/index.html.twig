@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}maven.dontdrinkandroot.net{% endblock title %}
+
+{% block body %}
+    <h1>maven.dontdrinkandroot.net</h1>
+    <h2>Repositories</h2>
+    <ul>
+        {% for mavenRepository in mavenRepositories %}
+            <li><a href="{{ path('repo_directory_index', {'shortName': mavenRepository.shortName, 'path': '/'}) }}">{{ mavenRepository.name }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock body %}

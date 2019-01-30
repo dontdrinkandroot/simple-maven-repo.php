@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ mavenRepository.name }} - {{ path }}{% endblock title %}
+
+{% block body %}
+    <ul>
+        {% for directory in directories %}
+            <li>
+                <a href="{{ path('repo_directory_index', {'shortName': mavenRepository.shortName, 'path' : path ~ directory.filename ~ '/'}) }}">{{ directory.filename }}</a>
+            </li>
+        {% endfor %}
+        {% for file in files %}
+            <li><a href="{{ path('repo_download', {'shortName': mavenRepository.shortName, 'path' : path ~ file.filename}) }}">{{ file.filename }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock body %}

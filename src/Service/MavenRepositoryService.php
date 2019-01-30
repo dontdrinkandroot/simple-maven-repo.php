@@ -6,6 +6,7 @@ use App\Entity\MavenRepository;
 use App\Entity\User;
 use App\Repository\MavenRepositoryRepository;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 
 /**
  * @author Philip Washington Sorst <philip@sorst.net>
@@ -15,7 +16,7 @@ class MavenRepositoryService
     /**
      * @var MavenRepositoryRepository
      */
-    private $repositoryRepository;
+    private $mavenRepositoryRepository;
 
     /**
      * @var string
@@ -24,9 +25,9 @@ class MavenRepositoryService
 
     private $filesystem;
 
-    public function __construct(MavenRepositoryRepository $repositoryRepository, string $storageRoot)
+    public function __construct(MavenRepositoryRepository $mavenRepositoryRepository, string $storageRoot)
     {
-        $this->repositoryRepository = $repositoryRepository;
+        $this->mavenRepositoryRepository = $mavenRepositoryRepository;
         $this->storageRoot = $storageRoot;
         $this->filesystem = new Filesystem();
     }
@@ -66,5 +67,26 @@ class MavenRepositoryService
     public function writeGranted(MavenRepository $mavenRepository, User $user): bool
     {
         return $mavenRepository->getWriteUsers()->contains($user);
+    }
+
+    public function listReadableRepositories(?User $user = null): array
+    {
+        return $this->mavenRepositoryRepository->listReadableRepositories($user);
+    }
+
+    public function listDirectories(MavenRepository $mavenRepository, string $path)
+    {
+        $directory = $this->getFilename($mavenRepository, $path);
+        $finder = new Finder();
+
+        return $finder->in($directory)->directories()->depth(0);
+    }
+
+    public function listFiles(MavenRepository $mavenRepository, string $path)
+    {
+        $directory = $this->getFilename($mavenRepository, $path);
+        $finder = new Finder();
+
+        return $finder->in($directory)->files()->depth(0);
     }
 }

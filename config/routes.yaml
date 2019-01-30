@@ -1,13 +1,27 @@
+index:
+    path: /
+    controller: App\Controller\IndexController::index
+
+repo_directory_index:
+    path: /repos/{shortName}{path}
+    controller: App\Controller\MavenRepositoryController::directoryIndex
+    methods: [GET]
+    requirements:
+        shortName: '^[a-z0-9-_]+$'
+        path: '/(.*/)?'
+
 repo_download:
-    path: /repos/{shortName}/{path}
+    path: /repos/{shortName}{path}
     controller: App\Controller\MavenRepositoryController::download
     methods: [GET]
     requirements:
-        path: '.+'
+        shortName: '^[a-z0-9-_]+$'
+        path: '/.+'
 
 repo_upload:
-    path: /repos/{shortName}/{path}
+    path: /repos/{shortName}{path}
     controller: App\Controller\MavenRepositoryController::upload
     methods: [PUT, POST]
     requirements:
-        path: '.+'
+        shortName: '^[a-z0-9-_]+$'
+        path: '/.+'

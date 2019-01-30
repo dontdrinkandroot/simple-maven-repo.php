@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\MavenRepository;
-use App\Entity\User;
+use App\Security\CurrentUserTrait;
 use App\Service\MavenRepositoryService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -13,12 +13,15 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Templating\EngineInterface;
 
 /**
  * @author Philip Washington Sorst <philip@sorst.net>
  */
 class MavenRepositoryController
 {
+    use CurrentUserTrait;
+
     /**
      * @var LoggerInterface
      */
@@ -36,7 +39,13 @@ class MavenRepositoryController
      */
     private $tokenStorage;
 
+    /**
+     * @var EngineInterface
+     */
+    private $templateEngine;
+
     public function __construct(
+        EngineInterface $templateEngine,
         MavenRepositoryService $mavenRepositoryService,
         TokenStorageInterface $tokenStorage,
         LoggerInterface $logger
@@ -45,6 +54,29 @@ class MavenRepositoryController
         $this->filesystem = new Filesystem();
         $this->mavenRepositoryService = $mavenRepositoryService;
         $this->tokenStorage = $tokenStorage;
+        $this->templateEngine = $templateEngine;
+    }
+
+    public function directoryIndex(MavenRepository $mavenRepository, string $path)
+    {
+        if (!$this->mavenRepositoryService->readGranted($mavenRepository, $this->findCurrentUser())) {
+            throw new AccessDeniedException();
+        }
+
+        $directories = $this->mavenRepositoryService->listDirectories($mavenRepository, $path);
+        $files = $this->mavenRepositoryService->listFiles($mavenRepository, $path);
+
+        return new Response(
+            $this->templateEngine->render(
+                'directory.html.twig',
+                [
+                    'mavenRepository' => $mavenRepository,
+                    'path'            => $path,
+                    'files'           => $files,
+                    'directories'     => $directories
+                ]
+            )
+        );
     }
 
     public function download(MavenRepository $mavenRepository, string $path)
@@ -94,28 +126,11 @@ class MavenRepositoryController
         return (substr($haystack, -$length) === $needle);
     }
 
-    private function findCurrentUser(): ?User
+    /**
+     * {@inheritdoc}
+     */
+    protected function getTokenStorage(): TokenStorageInterface
     {
-        $token = $this->tokenStorage->getToken();
-        if (null === $token) {
-            return null;
-        }
-
-        $user = $token->getUser();
-        if (!$user instanceof User) {
-            return null;
-        }
-
-        return $user;
-    }
-
-    private function fetchCurrentUser(): User
-    {
-        $user = $this->findCurrentUser();
-        if (null === $user) {
-            throw new AccessDeniedException();
-        }
-
-        return $user;
+        return $this->tokenStorage;
     }
 }
