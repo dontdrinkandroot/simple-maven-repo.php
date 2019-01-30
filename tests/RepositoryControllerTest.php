@@ -18,6 +18,6 @@ class RepositoryControllerTest extends WebTestCase
 
         $client->request(Request::METHOD_POST, '/repos/snapshots/net/dontdrinkandroot/test.pom');
 
-        $this->assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
+        $this->assertEquals(Response::HTTP_CREATED, $client->getResponse()->getStatusCode());
     }
 }
