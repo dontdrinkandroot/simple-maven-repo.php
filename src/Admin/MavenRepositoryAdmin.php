@@ -2,7 +2,7 @@
 
 namespace App\Admin;
 
-use App\Entity\Repository;
+use App\Entity\MavenRepository;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
@@ -10,7 +10,7 @@ use Sonata\AdminBundle\Form\FormMapper;
 /**
  * @author Philip Washington Sorst <philip@sorst.net>
  */
-class RepositoryAdmin extends AbstractAdmin
+class MavenRepositoryAdmin extends AbstractAdmin
 {
     /**
      * {@inheritdoc}
@@ -52,6 +52,6 @@ class RepositoryAdmin extends AbstractAdmin
      */
     public function toString($object)
     {
-        return $object instanceof Repository ? $object->getName() : 'Repository';
+        return $object instanceof MavenRepository ? $object->getName() : 'Repository';
     }
 }

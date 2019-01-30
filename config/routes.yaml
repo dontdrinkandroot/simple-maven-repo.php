@@ -1,13 +1,13 @@
 repo_download:
     path: /repos/{shortName}/{path}
-    controller: App\Controller\RepositoryController::download
+    controller: App\Controller\MavenRepositoryController::download
     methods: [GET]
     requirements:
         path: '.+'
 
 repo_upload:
     path: /repos/{shortName}/{path}
-    controller: App\Controller\RepositoryController::upload
+    controller: App\Controller\MavenRepositoryController::upload
     methods: [PUT, POST]
     requirements:
         path: '.+'

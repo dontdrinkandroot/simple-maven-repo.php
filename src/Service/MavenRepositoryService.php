@@ -2,15 +2,15 @@
 
 namespace App\Service;
 
-use App\Repository\RepositoryRepository;
+use App\Repository\MavenRepositoryRepository;
 
 /**
  * @author Philip Washington Sorst <philip@sorst.net>
  */
-class RepositoryService
+class MavenRepositoryService
 {
     /**
-     * @var RepositoryRepository
+     * @var MavenRepositoryRepository
      */
     private $repositoryRepository;
 
@@ -19,7 +19,7 @@ class RepositoryService
      */
     private $storageRoot;
 
-    public function __construct(RepositoryRepository $repositoryRepository, string $storageRoot)
+    public function __construct(MavenRepositoryRepository $repositoryRepository, string $storageRoot)
     {
         $this->repositoryRepository = $repositoryRepository;
         $this->storageRoot = $storageRoot;

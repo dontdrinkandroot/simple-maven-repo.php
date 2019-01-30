@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @author Philip Washington Sorst <philip@sorst.net>
  */
-class Repository
+class MavenRepository
 {
     /**
      * @ORM\Id()
@@ -148,5 +148,15 @@ class Repository
     public function getWriteUsers()
     {
         return $this->writeUsers;
+    }
+
+    public function addReadUser(User $user)
+    {
+        $this->readUsers->add($user);
+    }
+
+    public function addWriteUser(User $user)
+    {
+        $this->writeUsers->add($user);
     }
 }

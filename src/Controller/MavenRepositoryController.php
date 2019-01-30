@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Repository;
+use App\Entity\MavenRepository;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -13,7 +13,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 /**
  * @author Philip Washington Sorst <philip@sorst.net>
  */
-class RepositoryController
+class MavenRepositoryController
 {
     /**
      * @var LoggerInterface
@@ -28,9 +28,9 @@ class RepositoryController
         $this->filesystem = new Filesystem();
     }
 
-    public function download(Repository $repository, string $path)
+    public function download(MavenRepository $mavenRepository, string $path)
     {
-        $this->logger->info(sprintf('Download, repo: %s, path: %s', $repository->getShortName(), $path));
+        $this->logger->info(sprintf('Download, repo: %s, path: %s', $mavenRepository->getShortName(), $path));
 
 //        if ($this->endsWith($path, 'maven-metadata.xml')) {
 //            throw new NotFoundHttpException();
@@ -42,7 +42,7 @@ class RepositoryController
 //
 //        return new Response("ok");
 
-        $fileSystemPath = '/tmp/simplemavenrepo/' . $repository->getShortName() . '/' . $path;
+        $fileSystemPath = '/tmp/simplemavenrepo/' . $mavenRepository->getShortName() . '/' . $path;
         if (!file_exists($fileSystemPath)) {
             throw new NotFoundHttpException();
         }
@@ -50,13 +50,13 @@ class RepositoryController
         return new BinaryFileResponse($fileSystemPath);
     }
 
-    public function upload(Request $request, Repository $repository, string $path)
+    public function upload(Request $request, MavenRepository $mavenRepository, string $path)
     {
         $this->logger->info(
-            sprintf('Upload, repo: %s, path: %s', $repository->getShortName(), $path)
+            sprintf('Upload, repo: %s, path: %s', $mavenRepository->getShortName(), $path)
         );
 
-        $fileSystemFile = '/tmp/simplemavenrepo/' . $repository->getShortName() . '/' . $path;
+        $fileSystemFile = '/tmp/simplemavenrepo/' . $mavenRepository->getShortName() . '/' . $path;
         $fileSystemDirectory = dirname($fileSystemFile);
 
         if (!$this->filesystem->exists($fileSystemDirectory)) {

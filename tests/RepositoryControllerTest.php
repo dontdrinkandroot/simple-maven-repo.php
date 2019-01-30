@@ -2,7 +2,8 @@
 
 namespace App\Tests;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use App\DataFixtures\Repositories\MavenRepositorySnapshots;
+use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -11,8 +12,28 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class RepositoryControllerTest extends WebTestCase
 {
+    public function testGetNotFound()
+    {
+        $client = static::createClient();
+
+        $client->request(Request::METHOD_GET, '/repos/nonexisting/nonexisting');
+
+        $this->assertEquals(Response::HTTP_NOT_FOUND, $client->getResponse()->getStatusCode());
+    }
+
+    public function testPostNotFound()
+    {
+        $client = static::createClient();
+
+        $client->request(Request::METHOD_POST, '/repos/nonexisting/nonexisting');
+
+        $this->assertEquals(Response::HTTP_NOT_FOUND, $client->getResponse()->getStatusCode());
+    }
+
     public function testUpload()
     {
+        $referenceRepository = $this->loadFixtures([MavenRepositorySnapshots::class])->getReferenceRepository();
+
         $client = static::createClient();
         $client->catchExceptions(false);
 
