@@ -15,10 +15,15 @@ services:
         tags: ['controller.service_arguments']
 
     App\Controller\MavenRepositoryController:
-        arguments: ['@monolog.logger.repository']
+        arguments:
+            $logger: '@monolog.logger.repository'
         tags: ['controller.service_arguments']
 
     App\Admin\MavenRepositoryAdmin:
         arguments: [~, App\Entity\MavenRepository, ~]
         tags:
             - { name: sonata.admin, manager_type: orm, label: Repositories, group: Repository Management }
+
+    App\Service\MavenRepositoryService:
+        arguments:
+            $storageRoot: '%env(resolve:STORAGE_ROOT)%'

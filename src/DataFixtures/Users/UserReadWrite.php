@@ -12,6 +12,7 @@ use FOS\UserBundle\Model\UserManagerInterface;
 class UserReadWrite extends Fixture
 {
     const REFERENCE = 'user-read-write';
+    const USERNAME = 'userreadwrite';
 
     /**
      * @var UserManagerInterface
@@ -29,7 +30,7 @@ class UserReadWrite extends Fixture
     public function load(ObjectManager $manager)
     {
         $user = $this->userManager->createUser();
-        $user->setUsername('userreadwrite');
+        $user->setUsername(self::USERNAME);
         $user->setEmail($user->getUsername() . '@example.com');
         $user->setPlainPassword($user->getUsername());
         $user->setEnabled(true);

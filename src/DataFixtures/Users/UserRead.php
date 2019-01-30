@@ -13,6 +13,8 @@ class UserRead extends Fixture
 {
     const REFERENCE = 'user-read';
 
+    const USERNAME = 'userread';
+
     /**
      * @var UserManagerInterface
      */
@@ -29,7 +31,7 @@ class UserRead extends Fixture
     public function load(ObjectManager $manager)
     {
         $user = $this->userManager->createUser();
-        $user->setUsername('userread');
+        $user->setUsername(self::USERNAME);
         $user->setEmail($user->getUsername() . '@example.com');
         $user->setPlainPassword($user->getUsername());
         $user->setEnabled(true);
