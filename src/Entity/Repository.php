@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -48,6 +50,28 @@ class Repository
      * @var bool
      */
     private $visible = false;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\User")
+     * @ORM\JoinTable(name="repository_read_users")
+     *
+     * @var User[]|Collection
+     */
+    private $readUsers;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\User")
+     * @ORM\JoinTable(name="repository_write_users")
+     *
+     * @var User[]|Collection
+     */
+    private $writeUsers;
+
+    public function __construct()
+    {
+        $this->readUsers = new ArrayCollection();
+        $this->writeUsers = new ArrayCollection();
+    }
 
     /**
      * @return int
@@ -108,5 +132,21 @@ class Repository
     public function isNew()
     {
         return null === $this->id;
+    }
+
+    /**
+     * @return User[]|Collection
+     */
+    public function getReadUsers()
+    {
+        return $this->readUsers;
+    }
+
+    /**
+     * @return User[]|Collection
+     */
+    public function getWriteUsers()
+    {
+        return $this->writeUsers;
     }
 }

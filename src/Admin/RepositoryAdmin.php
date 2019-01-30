@@ -17,6 +17,7 @@ class RepositoryAdmin extends AbstractAdmin
      */
     protected function configureFormFields(FormMapper $form)
     {
+        $form->with('Basic Information');
         if ($this->isCurrentRoute('create')) {
             $form->add(
                 'shortName',
@@ -26,6 +27,12 @@ class RepositoryAdmin extends AbstractAdmin
         }
         $form->add('name');
         $form->add('visible', null, ['required' => false]);
+        $form->end();
+
+        $form->with('Permissions');
+        $form->add('readUsers');
+        $form->add('writeUsers');
+        $form->end();
     }
 
     /**

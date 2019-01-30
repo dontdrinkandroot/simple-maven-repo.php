@@ -1,12 +1,12 @@
 repo_download:
-    path: /repos/{repository}/{path}
+    path: /repos/{shortName}/{path}
     controller: App\Controller\RepositoryController::download
     methods: [GET]
     requirements:
         path: '.+'
 
 repo_upload:
-    path: /repos/{repository}/{path}
+    path: /repos/{shortName}/{path}
     controller: App\Controller\RepositoryController::upload
     methods: [PUT, POST]
     requirements:

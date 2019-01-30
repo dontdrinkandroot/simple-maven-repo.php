@@ -2,15 +2,13 @@
 
 namespace App\Controller;
 
-use Doctrine\Bundle\DoctrineCacheBundle\DependencyInjection\Definition\FileSystemDefinition;
+use App\Entity\Repository;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * @author Philip Washington Sorst <philip@sorst.net>
@@ -30,9 +28,9 @@ class RepositoryController
         $this->filesystem = new Filesystem();
     }
 
-    public function download(Request $request, string $repository, string $path)
+    public function download(Repository $repository, string $path)
     {
-        $this->logger->info(sprintf('Download, repo: %s, path: %s', $repository, $path));
+        $this->logger->info(sprintf('Download, repo: %s, path: %s', $repository->getShortName(), $path));
 
 //        if ($this->endsWith($path, 'maven-metadata.xml')) {
 //            throw new NotFoundHttpException();
@@ -44,7 +42,7 @@ class RepositoryController
 //
 //        return new Response("ok");
 
-        $fileSystemPath = '/tmp/simplemavenrepo/' . $repository . '/' . $path;
+        $fileSystemPath = '/tmp/simplemavenrepo/' . $repository->getShortName() . '/' . $path;
         if (!file_exists($fileSystemPath)) {
             throw new NotFoundHttpException();
         }
@@ -52,13 +50,13 @@ class RepositoryController
         return new BinaryFileResponse($fileSystemPath);
     }
 
-    public function upload(Request $request, string $repository, string $path)
+    public function upload(Request $request, Repository $repository, string $path)
     {
         $this->logger->info(
-            sprintf('Upload, repo: %s, path: %s', $repository, $path)
+            sprintf('Upload, repo: %s, path: %s', $repository->getShortName(), $path)
         );
 
-        $fileSystemFile = '/tmp/simplemavenrepo/' . $repository . '/' . $path;
+        $fileSystemFile = '/tmp/simplemavenrepo/' . $repository->getShortName() . '/' . $path;
         $fileSystemDirectory = dirname($fileSystemFile);
 
         if (!$this->filesystem->exists($fileSystemDirectory)) {
