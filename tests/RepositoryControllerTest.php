@@ -32,6 +32,22 @@ class RepositoryControllerTest extends WebTestCase
         $this->assertEquals(Response::HTTP_NOT_FOUND, $client->getResponse()->getStatusCode());
     }
 
+    public function testDownloadPublic()
+    {
+        $referenceRepository = $this->loadFixtures([MavenRepositorySnapshots::class])->getReferenceRepository();
+
+        $client = $this->makeClient();
+
+        $client->request(Request::METHOD_GET, '/repos/snapshots/directory/file');
+
+        $this->assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
+
+        $this->assertInstanceOf(BinaryFileResponse::class, $client->getResponse());
+        /** @var BinaryFileResponse $binaryFileResponse */
+        $binaryFileResponse = $client->getResponse();
+        $this->assertEquals('snapshots', file_get_contents($binaryFileResponse->getFile()));
+    }
+
     public function testUploadNotFound()
     {
         $client = $this->makeClient();
@@ -105,7 +121,6 @@ class RepositoryControllerTest extends WebTestCase
 
         $this->assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
         $this->assertInstanceOf(BinaryFileResponse::class, $client->getResponse());
-
         /** @var BinaryFileResponse $binaryFileResponse */
         $binaryFileResponse = $client->getResponse();
         $this->assertEquals('Test', file_get_contents($binaryFileResponse->getFile()));

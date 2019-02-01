@@ -80,6 +80,9 @@
     "doctrine/reflection": {
         "version": "v1.0.0"
     },
+    "dontdrinkandroot/utils": {
+        "version": "v0.4.3"
+    },
     "easycorp/easy-log-handler": {
         "version": "1.0",
         "recipe": {

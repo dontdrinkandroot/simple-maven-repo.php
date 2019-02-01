@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\MavenRepository;
 use App\Security\CurrentUserTrait;
 use App\Service\MavenRepositoryService;
+use Dontdrinkandroot\Path\DirectoryPath;
+use Dontdrinkandroot\Path\FilePath;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -57,7 +59,7 @@ class MavenRepositoryController
         $this->templateEngine = $templateEngine;
     }
 
-    public function directoryIndex(MavenRepository $mavenRepository, string $path)
+    public function directoryIndex(MavenRepository $mavenRepository, DirectoryPath $path)
     {
         if (!$this->mavenRepositoryService->readGranted($mavenRepository, $this->findCurrentUser())) {
             throw new AccessDeniedException();
@@ -79,7 +81,7 @@ class MavenRepositoryController
         );
     }
 
-    public function download(MavenRepository $mavenRepository, string $path)
+    public function download(MavenRepository $mavenRepository, FilePath $path)
     {
         if (!$this->mavenRepositoryService->readGranted($mavenRepository, $this->findCurrentUser())) {
             throw new AccessDeniedException();
@@ -94,7 +96,7 @@ class MavenRepositoryController
         return new BinaryFileResponse($this->mavenRepositoryService->getFilename($mavenRepository, $path));
     }
 
-    public function upload(Request $request, MavenRepository $mavenRepository, string $path)
+    public function upload(Request $request, MavenRepository $mavenRepository, FilePath $path)
     {
         if (!$this->mavenRepositoryService->writeGranted($mavenRepository, $this->fetchCurrentUser())) {
             throw new AccessDeniedException();
@@ -107,23 +109,6 @@ class MavenRepositoryController
         $this->mavenRepositoryService->storeFile($mavenRepository, $path, $request->getContent(true));
 
         return new Response(null, Response::HTTP_CREATED);
-    }
-
-    private function startsWith($haystack, $needle)
-    {
-        $length = strlen($needle);
-
-        return (substr($haystack, 0, $length) === $needle);
-    }
-
-    private function endsWith($haystack, $needle)
-    {
-        $length = strlen($needle);
-        if ($length == 0) {
-            return true;
-        }
-
-        return (substr($haystack, -$length) === $needle);
     }
 
     /**

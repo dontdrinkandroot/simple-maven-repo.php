@@ -5,6 +5,9 @@ namespace App\Service;
 use App\Entity\MavenRepository;
 use App\Entity\User;
 use App\Repository\MavenRepositoryRepository;
+use Dontdrinkandroot\Path\DirectoryPath;
+use Dontdrinkandroot\Path\FilePath;
+use Dontdrinkandroot\Path\Path;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
@@ -32,7 +35,7 @@ class MavenRepositoryService
         $this->filesystem = new Filesystem();
     }
 
-    public function storeFile(MavenRepository $mavenRepository, string $path, $resource)
+    public function storeFile(MavenRepository $mavenRepository, FilePath $path, $resource)
     {
         $fileName = $this->getFilename($mavenRepository, $path);
         $directory = dirname($fileName);
@@ -43,16 +46,16 @@ class MavenRepositoryService
         file_put_contents($fileName, $resource);
     }
 
-    public function hasFile(MavenRepository $mavenRepository, string $path): bool
+    public function hasFile(MavenRepository $mavenRepository, FilePath $path): bool
     {
         $filename = $this->getFilename($mavenRepository, $path);
 
         return $this->filesystem->exists($filename);
     }
 
-    public function getFilename(MavenRepository $mavenRepository, string $path): string
+    public function getFilename(MavenRepository $mavenRepository, Path $path): string
     {
-        return $this->storageRoot . '/' . $mavenRepository->getShortName() . '/' . $path;
+        return $this->storageRoot . '/' . $mavenRepository->getShortName() . '/' . $path->toRelativeFileSystemString();
     }
 
     public function readGranted(MavenRepository $mavenRepository, ?User $user = null): bool
@@ -74,7 +77,7 @@ class MavenRepositoryService
         return $this->mavenRepositoryRepository->listReadableRepositories($user);
     }
 
-    public function listDirectories(MavenRepository $mavenRepository, string $path)
+    public function listDirectories(MavenRepository $mavenRepository, DirectoryPath $path)
     {
         $directory = $this->getFilename($mavenRepository, $path);
         $finder = new Finder();
@@ -82,7 +85,7 @@ class MavenRepositoryService
         return $finder->in($directory)->directories()->depth(0);
     }
 
-    public function listFiles(MavenRepository $mavenRepository, string $path)
+    public function listFiles(MavenRepository $mavenRepository, DirectoryPath $path)
     {
         $directory = $this->getFilename($mavenRepository, $path);
         $finder = new Finder();
