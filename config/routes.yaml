@@ -25,3 +25,19 @@ repo_upload:
     requirements:
         shortName: '^[a-z0-9-_]+$'
         path: '/.+'
+
+group_directory_index:
+    path: /groups/{shortName}{path}
+    controller: App\Controller\MavenRepositoryGroupController::directoryIndex
+    methods: [GET]
+    requirements:
+        shortName: '^[a-z0-9-_]+$'
+        path: '/(.*/)?'
+
+group_download:
+    path: /groups/{shortName}{path}
+    controller: App\Controller\MavenRepositoryGroupController::download
+    methods: [GET]
+    requirements:
+        shortName: '^[a-z0-9-_]+$'
+        path: '/.+'

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Security\CurrentUserTrait;
+use App\Service\MavenRepositoryGroupService;
 use App\Service\MavenRepositoryService;
 use Symfony\Bridge\Twig\TwigEngine;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,14 +32,21 @@ class IndexController
      */
     private $templatingEngine;
 
+    /**
+     * @var MavenRepositoryGroupService
+     */
+    private $mavenRepositoryGroupService;
+
     public function __construct(
         TokenStorageInterface $tokenStorage,
         MavenRepositoryService $mavenRepositoryService,
+        MavenRepositoryGroupService $mavenRepositoryGroupService,
         EngineInterface $templatingEngine
     ) {
         $this->tokenStorage = $tokenStorage;
         $this->mavenRepositoryService = $mavenRepositoryService;
         $this->templatingEngine = $templatingEngine;
+        $this->mavenRepositoryGroupService = $mavenRepositoryGroupService;
     }
 
     public function index()
@@ -47,7 +55,10 @@ class IndexController
             $this->templatingEngine->render(
                 'index.html.twig',
                 [
-                    'mavenRepositories' => $this->mavenRepositoryService->listReadableRepositories(
+                    'mavenRepositories'     => $this->mavenRepositoryService->listReadableRepositories(
+                        $this->findCurrentUser()
+                    ),
+                    'mavenRepositoryGroups' => $this->mavenRepositoryGroupService->listReadableGroups(
                         $this->findCurrentUser()
                     )
                 ]

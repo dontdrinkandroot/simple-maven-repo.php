@@ -10,4 +10,12 @@
             <li><a href="{{ path('repo_directory_index', {'shortName': mavenRepository.shortName, 'path': '/'}) }}">{{ mavenRepository.name }}</a></li>
         {% endfor %}
     </ul>
+    <h2>Groups</h2>
+    <ul>
+        {% for mavenRepositoryGroup in mavenRepositoryGroups %}
+            <li>
+                <a href="{{ path('group_directory_index', {'shortName': mavenRepositoryGroup.shortName, 'path': '/'}) }}">{{ mavenRepositoryGroup.name }}</a>
+            </li>
+        {% endfor %}
+    </ul>
 {% endblock body %}

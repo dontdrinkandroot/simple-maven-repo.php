@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @author Philip Washington Sorst <philip@sorst.net>
  */
-class MavenRepository
+class MavenRepositoryGroup
 {
     /**
      * @ORM\Id()
@@ -53,24 +53,24 @@ class MavenRepository
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\User")
-     * @ORM\JoinTable(name="repository_read_users")
+     * @ORM\JoinTable(name="repository_group_read_users")
      *
      * @var User[]|Collection
      */
     private $readUsers;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\User")
-     * @ORM\JoinTable(name="repository_write_users")
+     * @ORM\ManyToMany(targetEntity="App\Entity\MavenRepository")
+     * @ORM\JoinTable(name="repository_group_repositories")
      *
-     * @var User[]|Collection
+     * @var MavenRepository[]|Collection
      */
-    private $writeUsers;
+    private $mavenRepositories;
 
     public function __construct()
     {
         $this->readUsers = new ArrayCollection();
-        $this->writeUsers = new ArrayCollection();
+        $this->mavenRepositories = new ArrayCollection();
     }
 
     /**
@@ -116,7 +116,7 @@ class MavenRepository
     /**
      * @return bool
      */
-    public function isVisible(): bool
+    public function isVisible(): ?bool
     {
         return $this->visible;
     }
@@ -129,11 +129,6 @@ class MavenRepository
         $this->visible = $visible;
     }
 
-    public function isNew()
-    {
-        return null === $this->id;
-    }
-
     /**
      * @return User[]|Collection
      */
@@ -143,11 +138,32 @@ class MavenRepository
     }
 
     /**
-     * @return User[]|Collection
+     * @param User[]|Collection $readUsers
      */
-    public function getWriteUsers()
+    public function setReadUsers($readUsers): void
     {
-        return $this->writeUsers;
+        $this->readUsers = $readUsers;
+    }
+
+    /**
+     * @return MavenRepository[]|Collection
+     */
+    public function getMavenRepositories()
+    {
+        return $this->mavenRepositories;
+    }
+
+    /**
+     * @param MavenRepository[]|Collection $mavenRepositories
+     */
+    public function setMavenRepositories($mavenRepositories): void
+    {
+        $this->mavenRepositories = $mavenRepositories;
+    }
+
+    public function isNew()
+    {
+        return null === $this->id;
     }
 
     public function addReadUser(User $user)
@@ -155,16 +171,8 @@ class MavenRepository
         $this->readUsers->add($user);
     }
 
-    public function addWriteUser(User $user)
+    public function addMavenRepository(MavenRepository $mavenRepository)
     {
-        $this->writeUsers->add($user);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __toString()
-    {
-        return $this->getName();
+        $this->mavenRepositories->add($mavenRepository);
     }
 }

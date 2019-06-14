@@ -57,7 +57,7 @@ class MavenRepositoryReleases extends Fixture implements DependentFixtureInterfa
 
         $this->mavenRepositoryService->storeFile(
             $mavenRepository,
-            FilePath::parse('/directory/file'),
+            FilePath::parse('/artifact1/0.1-release'),
             'releases'
         );
     }

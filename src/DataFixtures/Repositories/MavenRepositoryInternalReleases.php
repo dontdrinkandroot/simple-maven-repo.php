@@ -63,7 +63,7 @@ class MavenRepositoryInternalReleases extends Fixture implements DependentFixtur
 
         $this->mavenRepositoryService->storeFile(
             $mavenRepository,
-            FilePath::parse('/directory/file'),
+            FilePath::parse('/artifact1/0.1-release'),
             'internalreleases'
         );
     }

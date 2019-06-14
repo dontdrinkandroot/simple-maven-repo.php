@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ mavenRepositoryGroup.name }} - {{ path }}{% endblock title %}
+
+{% block body %}
+    <ul>
+        {% for directory in directories %}
+            <li>
+                <a href="{{ path('group_directory_index', {'shortName': mavenRepositoryGroup.shortName, 'path' : path ~ directory.filename ~ '/'}) }}">{{ directory.filename }}</a>
+            </li>
+        {% endfor %}
+        {% for file in files %}
+            <li><a href="{{ path('group_download', {'shortName': mavenRepositoryGroup.shortName, 'path' : path ~ file.filename}) }}">{{ file.filename }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock body %}

@@ -70,7 +70,7 @@ class MavenRepositoryController
 
         return new Response(
             $this->templateEngine->render(
-                'directory.html.twig',
+                'Repository/directory.html.twig',
                 [
                     'mavenRepository' => $mavenRepository,
                     'path'            => $path,

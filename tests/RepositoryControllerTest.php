@@ -38,7 +38,7 @@ class RepositoryControllerTest extends WebTestCase
 
         $client = $this->makeClient();
 
-        $client->request(Request::METHOD_GET, '/repos/snapshots/directory/file');
+        $client->request(Request::METHOD_GET, '/repos/snapshots/artifact1/0.1-snapshot');
 
         $this->assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
 

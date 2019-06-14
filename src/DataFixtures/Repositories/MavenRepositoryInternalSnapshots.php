@@ -63,7 +63,7 @@ class MavenRepositoryInternalSnapshots extends Fixture implements DependentFixtu
 
         $this->mavenRepositoryService->storeFile(
             $mavenRepository,
-            FilePath::parse('/directory/file'),
+            FilePath::parse('/artifact1/0.1-snapshot'),
             'internalsnapshots'
         );
     }
