@@ -87,7 +87,7 @@ class MavenRepositoryGroupService
     public function getFilename(
         MavenRepositoryGroup $mavenRepositoryGroup,
         FilePath $path
-    ): string {
+    ): ?string {
         foreach ($mavenRepositoryGroup->getMavenRepositories() as $mavenRepository) {
             if ($this->mavenRepositoryService->hasFile($mavenRepository, $path)) {
                 return $this->mavenRepositoryService->getFilename($mavenRepository, $path);

@@ -46,6 +46,16 @@ class GroupControllerTest extends WebTestCase
         $this->assertEquals('releases', file_get_contents($binaryFileResponse->getFile()));
     }
 
+    public function testDownloadMissing()
+    {
+        $referenceRepository = $this->loadFixtures([MavenRepositoryGroupPublic::class])->getReferenceRepository();
+
+        $client = $this->makeClient();
+
+        $client->request(Request::METHOD_GET, '/groups/public/missingartifact/missingfile');
+        $this->assertStatusCode(404, $client);
+    }
+
     public function testList()
     {
         $referenceRepository = $this->loadFixtures([MavenRepositoryGroupPublic::class])->getReferenceRepository();
