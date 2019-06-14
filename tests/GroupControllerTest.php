@@ -45,4 +45,17 @@ class GroupControllerTest extends WebTestCase
         $binaryFileResponse = $client->getResponse();
         $this->assertEquals('releases', file_get_contents($binaryFileResponse->getFile()));
     }
+
+    public function testList()
+    {
+        $referenceRepository = $this->loadFixtures([MavenRepositoryGroupPublic::class])->getReferenceRepository();
+
+        $client = $this->makeClient();
+
+        $client->request(Request::METHOD_GET, '/groups/public/artifact1/');
+        $this->assertStatusCode(200, $client);
+
+        $client->request(Request::METHOD_GET, '/groups/public/artifact2/');
+        $this->assertStatusCode(200, $client);
+    }
 }

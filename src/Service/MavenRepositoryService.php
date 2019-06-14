@@ -53,6 +53,13 @@ class MavenRepositoryService
         return $this->filesystem->exists($filename);
     }
 
+    public function hasDirectory(MavenRepository $mavenRepository, DirectoryPath $path): bool
+    {
+        $filename = $this->getFilename($mavenRepository, $path);
+
+        return $this->filesystem->exists($filename);
+    }
+
     public function getFilename(MavenRepository $mavenRepository, Path $path): string
     {
         return $this->storageRoot . '/' . $mavenRepository->getShortName() . '/' . $path->toRelativeFileSystemString();

@@ -60,5 +60,11 @@ class MavenRepositorySnapshots extends Fixture implements DependentFixtureInterf
             FilePath::parse('/artifact1/0.1-snapshot'),
             'snapshots'
         );
+
+        $this->mavenRepositoryService->storeFile(
+            $mavenRepository,
+            FilePath::parse('/artifact2/0.1-snapshot'),
+            'snapshots'
+        );
     }
 }

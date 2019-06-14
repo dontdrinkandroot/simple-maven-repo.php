@@ -54,9 +54,11 @@ class MavenRepositoryGroupService
     ) {
         $directories = [];
         foreach ($mavenRepositoryGroup->getMavenRepositories() as $mavenRepository) {
-            foreach ($this->mavenRepositoryService->listDirectories($mavenRepository, $path) as $directory) {
-                if (!in_array($directory, $directories)) {
-                    $directories[] = $directory;
+            if ($this->mavenRepositoryService->hasDirectory($mavenRepository, $path)) {
+                foreach ($this->mavenRepositoryService->listDirectories($mavenRepository, $path) as $directory) {
+                    if (!in_array($directory, $directories)) {
+                        $directories[] = $directory;
+                    }
                 }
             }
         }
@@ -70,9 +72,11 @@ class MavenRepositoryGroupService
     ) {
         $files = [];
         foreach ($mavenRepositoryGroup->getMavenRepositories() as $mavenRepository) {
-            foreach ($this->mavenRepositoryService->listFiles($mavenRepository, $path) as $file) {
-                if (!in_array($file, $files)) {
-                    $files[] = $file;
+            if ($this->mavenRepositoryService->hasDirectory($mavenRepository, $path)) {
+                foreach ($this->mavenRepositoryService->listFiles($mavenRepository, $path) as $file) {
+                    if (!in_array($file, $files)) {
+                        $files[] = $file;
+                    }
                 }
             }
         }
