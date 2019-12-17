@@ -1,4 +1,4 @@
-image: philipsorst/php-testing:18-04-7-2
+image: philipsorst/php-testing:18-04-7-3
 
 options:
     max-time: 10
