@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class RepositoryControllerTest extends WebTestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $filesystem = new Filesystem();
