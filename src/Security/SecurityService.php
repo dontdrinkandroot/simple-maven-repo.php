@@ -6,14 +6,18 @@ use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
-/**
- * @author Philip Washington Sorst <philip@sorst.net>
- */
-trait CurrentUserTrait
+class SecurityService
 {
-    protected function findCurrentUser(): ?User
+    private TokenStorageInterface $tokenStorage;
+
+    public function __construct(TokenStorageInterface $tokenStorage)
     {
-        $token = $this->getTokenStorage()->getToken();
+        $this->tokenStorage = $tokenStorage;
+    }
+
+    public function findCurrentUser(): ?User
+    {
+        $token = $this->tokenStorage->getToken();
         if (null === $token) {
             return null;
         }
@@ -26,7 +30,7 @@ trait CurrentUserTrait
         return $user;
     }
 
-    protected function fetchCurrentUser(): User
+    public function fetchCurrentUser(): User
     {
         $user = $this->findCurrentUser();
         if (null === $user) {
@@ -35,6 +39,4 @@ trait CurrentUserTrait
 
         return $user;
     }
-
-    protected abstract function getTokenStorage(): TokenStorageInterface;
 }

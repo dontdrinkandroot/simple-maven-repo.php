@@ -13,15 +13,9 @@ use Dontdrinkandroot\Path\FilePath;
  */
 class MavenRepositoryGroupService
 {
-    /**
-     * @var MavenRepositoryService
-     */
-    private $mavenRepositoryService;
+    private MavenRepositoryService $mavenRepositoryService;
 
-    /**
-     * @var MavenRepositoryGroupRepository
-     */
-    private $mavenRepositoryGroupRepository;
+    private MavenRepositoryGroupRepository $mavenRepositoryGroupRepository;
 
     public function __construct(
         MavenRepositoryGroupRepository $mavenRepositoryGroupRepository,

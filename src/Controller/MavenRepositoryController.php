@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\MavenRepository;
-use App\Security\CurrentUserTrait;
+use App\Security\SecurityService;
 use App\Service\MavenRepositoryService;
 use Dontdrinkandroot\Path\DirectoryPath;
 use Dontdrinkandroot\Path\FilePath;
@@ -13,7 +13,6 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Templating\EngineInterface;
 
@@ -22,46 +21,32 @@ use Symfony\Component\Templating\EngineInterface;
  */
 class MavenRepositoryController
 {
-    use CurrentUserTrait;
+    private LoggerInterface $logger;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private Filesystem $filesystem;
 
-    private $filesystem;
+    private MavenRepositoryService $mavenRepositoryService;
 
-    /**
-     * @var MavenRepositoryService
-     */
-    private $mavenRepositoryService;
+    private EngineInterface $templateEngine;
 
-    /**
-     * @var TokenStorageInterface
-     */
-    private $tokenStorage;
-
-    /**
-     * @var EngineInterface
-     */
-    private $templateEngine;
+    private SecurityService $securityService;
 
     public function __construct(
         EngineInterface $templateEngine,
         MavenRepositoryService $mavenRepositoryService,
-        TokenStorageInterface $tokenStorage,
+        SecurityService $securityService,
         LoggerInterface $logger
     ) {
         $this->logger = $logger;
         $this->filesystem = new Filesystem();
         $this->mavenRepositoryService = $mavenRepositoryService;
-        $this->tokenStorage = $tokenStorage;
         $this->templateEngine = $templateEngine;
+        $this->securityService = $securityService;
     }
 
-    public function directoryIndex(MavenRepository $mavenRepository, DirectoryPath $path)
+    public function directoryIndex(MavenRepository $mavenRepository, DirectoryPath $path): Response
     {
-        if (!$this->mavenRepositoryService->readGranted($mavenRepository, $this->findCurrentUser())) {
+        if (!$this->mavenRepositoryService->readGranted($mavenRepository, $this->securityService->findCurrentUser())) {
             throw new AccessDeniedException();
         }
 
@@ -81,9 +66,9 @@ class MavenRepositoryController
         );
     }
 
-    public function download(MavenRepository $mavenRepository, FilePath $path)
+    public function download(MavenRepository $mavenRepository, FilePath $path): Response
     {
-        if (!$this->mavenRepositoryService->readGranted($mavenRepository, $this->findCurrentUser())) {
+        if (!$this->mavenRepositoryService->readGranted($mavenRepository, $this->securityService->findCurrentUser())) {
             throw new AccessDeniedException();
         }
 
@@ -96,9 +81,12 @@ class MavenRepositoryController
         return new BinaryFileResponse($this->mavenRepositoryService->getFilename($mavenRepository, $path));
     }
 
-    public function upload(Request $request, MavenRepository $mavenRepository, FilePath $path)
+    public function upload(Request $request, MavenRepository $mavenRepository, FilePath $path): Response
     {
-        if (!$this->mavenRepositoryService->writeGranted($mavenRepository, $this->fetchCurrentUser())) {
+        if (!$this->mavenRepositoryService->writeGranted(
+            $mavenRepository,
+            $this->securityService->fetchCurrentUser()
+        )) {
             throw new AccessDeniedException();
         }
 
@@ -109,13 +97,5 @@ class MavenRepositoryController
         $this->mavenRepositoryService->storeFile($mavenRepository, $path, $request->getContent(true));
 
         return new Response(null, Response::HTTP_CREATED);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getTokenStorage(): TokenStorageInterface
-    {
-        return $this->tokenStorage;
     }
 }

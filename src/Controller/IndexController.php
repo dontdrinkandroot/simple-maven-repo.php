@@ -2,12 +2,10 @@
 
 namespace App\Controller;
 
-use App\Security\CurrentUserTrait;
+use App\Security\SecurityService;
 use App\Service\MavenRepositoryGroupService;
 use App\Service\MavenRepositoryService;
-use Symfony\Bridge\Twig\TwigEngine;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Templating\EngineInterface;
 
 /**
@@ -15,62 +13,40 @@ use Symfony\Component\Templating\EngineInterface;
  */
 class IndexController
 {
-    use CurrentUserTrait;
+    private MavenRepositoryService $mavenRepositoryService;
 
-    /**
-     * @var TokenStorageInterface
-     */
-    private $tokenStorage;
+    private EngineInterface $templatingEngine;
 
-    /**
-     * @var MavenRepositoryService
-     */
-    private $mavenRepositoryService;
+    private MavenRepositoryGroupService $mavenRepositoryGroupService;
 
-    /**
-     * @var TwigEngine
-     */
-    private $templatingEngine;
-
-    /**
-     * @var MavenRepositoryGroupService
-     */
-    private $mavenRepositoryGroupService;
+    private SecurityService $securityService;
 
     public function __construct(
-        TokenStorageInterface $tokenStorage,
+        SecurityService $securityService,
         MavenRepositoryService $mavenRepositoryService,
         MavenRepositoryGroupService $mavenRepositoryGroupService,
         EngineInterface $templatingEngine
     ) {
-        $this->tokenStorage = $tokenStorage;
         $this->mavenRepositoryService = $mavenRepositoryService;
         $this->templatingEngine = $templatingEngine;
         $this->mavenRepositoryGroupService = $mavenRepositoryGroupService;
+        $this->securityService = $securityService;
     }
 
-    public function index()
+    public function index(): Response
     {
         return new Response(
             $this->templatingEngine->render(
                 'index.html.twig',
                 [
                     'mavenRepositories'     => $this->mavenRepositoryService->listReadableRepositories(
-                        $this->findCurrentUser()
+                        $this->securityService->findCurrentUser()
                     ),
                     'mavenRepositoryGroups' => $this->mavenRepositoryGroupService->listReadableGroups(
-                        $this->findCurrentUser()
+                        $this->securityService->findCurrentUser()
                     )
                 ]
             )
         );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getTokenStorage(): TokenStorageInterface
-    {
-        return $this->tokenStorage;
     }
 }

@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\MavenRepositoryGroup;
-use App\Security\CurrentUserTrait;
+use App\Security\SecurityService;
 use App\Service\MavenRepositoryGroupService;
 use Dontdrinkandroot\Path\DirectoryPath;
 use Dontdrinkandroot\Path\FilePath;
@@ -12,7 +12,6 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Templating\EngineInterface;
 
@@ -21,46 +20,35 @@ use Symfony\Component\Templating\EngineInterface;
  */
 class MavenRepositoryGroupController
 {
-    use CurrentUserTrait;
+    private LoggerInterface $logger;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private Filesystem $filesystem;
 
-    private $filesystem;
+    private MavenRepositoryGroupService $mavenRepositoryGroupService;
 
-    /**
-     * @var MavenRepositoryGroupService
-     */
-    private $mavenRepositoryGroupService;
+    private EngineInterface $templateEngine;
 
-    /**
-     * @var TokenStorageInterface
-     */
-    private $tokenStorage;
-
-    /**
-     * @var EngineInterface
-     */
-    private $templateEngine;
+    private SecurityService $securityService;
 
     public function __construct(
         EngineInterface $templateEngine,
         MavenRepositoryGroupService $mavenRepositoryGroupService,
-        TokenStorageInterface $tokenStorage,
+        SecurityService $securityService,
         LoggerInterface $logger
     ) {
         $this->logger = $logger;
         $this->filesystem = new Filesystem();
         $this->mavenRepositoryGroupService = $mavenRepositoryGroupService;
-        $this->tokenStorage = $tokenStorage;
         $this->templateEngine = $templateEngine;
+        $this->securityService = $securityService;
     }
 
-    public function directoryIndex(MavenRepositoryGroup $mavenRepositoryGroup, DirectoryPath $path)
+    public function directoryIndex(MavenRepositoryGroup $mavenRepositoryGroup, DirectoryPath $path): Response
     {
-        if (!$this->mavenRepositoryGroupService->readGranted($mavenRepositoryGroup, $this->findCurrentUser())) {
+        if (!$this->mavenRepositoryGroupService->readGranted(
+            $mavenRepositoryGroup,
+            $this->securityService->findCurrentUser()
+        )) {
             throw new AccessDeniedException();
         }
 
@@ -80,9 +68,12 @@ class MavenRepositoryGroupController
         );
     }
 
-    public function download(MavenRepositoryGroup $mavenRepositoryGroup, FilePath $path)
+    public function download(MavenRepositoryGroup $mavenRepositoryGroup, FilePath $path): Response
     {
-        if (!$this->mavenRepositoryGroupService->readGranted($mavenRepositoryGroup, $this->findCurrentUser())) {
+        if (!$this->mavenRepositoryGroupService->readGranted(
+            $mavenRepositoryGroup,
+            $this->securityService->findCurrentUser()
+        )) {
             throw new AccessDeniedException();
         }
 
@@ -95,13 +86,5 @@ class MavenRepositoryGroupController
         }
 
         return new BinaryFileResponse($filename);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getTokenStorage(): TokenStorageInterface
-    {
-        return $this->tokenStorage;
     }
 }

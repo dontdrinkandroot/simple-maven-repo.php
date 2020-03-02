@@ -16,17 +16,11 @@ use Symfony\Component\Finder\Finder;
  */
 class MavenRepositoryService
 {
-    /**
-     * @var MavenRepositoryRepository
-     */
-    private $mavenRepositoryRepository;
+    private MavenRepositoryRepository $mavenRepositoryRepository;
 
-    /**
-     * @var string
-     */
-    private $storageRoot;
+    private string $storageRoot;
 
-    private $filesystem;
+    private Filesystem $filesystem;
 
     public function __construct(MavenRepositoryRepository $mavenRepositoryRepository, string $storageRoot)
     {

@@ -8,7 +8,7 @@ use FOS\UserBundle\Model\UserInterface;
 class NoopMailer implements MailerInterface
 {
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function sendConfirmationEmailMessage(UserInterface $user)
     {
@@ -16,7 +16,7 @@ class NoopMailer implements MailerInterface
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function sendResettingEmailMessage(UserInterface $user)
     {
