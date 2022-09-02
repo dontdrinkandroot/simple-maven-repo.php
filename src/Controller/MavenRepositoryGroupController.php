@@ -8,38 +8,27 @@ use App\Service\MavenRepositoryGroupService;
 use Dontdrinkandroot\Path\DirectoryPath;
 use Dontdrinkandroot\Path\FilePath;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\Templating\EngineInterface;
 
-/**
- * @author Philip Washington Sorst <philip@sorst.net>
- */
-class MavenRepositoryGroupController
+class MavenRepositoryGroupController extends AbstractController
 {
     private LoggerInterface $logger;
 
-    private Filesystem $filesystem;
-
     private MavenRepositoryGroupService $mavenRepositoryGroupService;
-
-    private EngineInterface $templateEngine;
 
     private SecurityService $securityService;
 
     public function __construct(
-        EngineInterface $templateEngine,
         MavenRepositoryGroupService $mavenRepositoryGroupService,
         SecurityService $securityService,
         LoggerInterface $logger
     ) {
         $this->logger = $logger;
-        $this->filesystem = new Filesystem();
         $this->mavenRepositoryGroupService = $mavenRepositoryGroupService;
-        $this->templateEngine = $templateEngine;
         $this->securityService = $securityService;
     }
 
@@ -55,16 +44,14 @@ class MavenRepositoryGroupController
         $directories = $this->mavenRepositoryGroupService->listDirectories($mavenRepositoryGroup, $path);
         $files = $this->mavenRepositoryGroupService->listFiles($mavenRepositoryGroup, $path);
 
-        return new Response(
-            $this->templateEngine->render(
-                'RepositoryGroup/directory.html.twig',
-                [
-                    'mavenRepositoryGroup' => $mavenRepositoryGroup,
-                    'path'                 => $path,
-                    'files'                => $files,
-                    'directories'          => $directories
-                ]
-            )
+        return $this->render(
+            'RepositoryGroup/directory.html.twig',
+            [
+                'mavenRepositoryGroup' => $mavenRepositoryGroup,
+                'path'                 => $path,
+                'files'                => $files,
+                'directories'          => $directories
+            ]
         );
     }
 
@@ -77,7 +64,9 @@ class MavenRepositoryGroupController
             throw new AccessDeniedException();
         }
 
-        $this->logger->info(sprintf('Download, repo: %s, path: %s', $mavenRepositoryGroup->getShortName(), $path));
+        $this->logger->info(
+            sprintf('Download, repo: %s, path: %s', $mavenRepositoryGroup->getShortName(), (string)$path)
+        );
 
         $filename = $this->mavenRepositoryGroupService->getFilename($mavenRepositoryGroup, $path);
 

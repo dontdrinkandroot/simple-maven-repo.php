@@ -2,24 +2,20 @@
 
 namespace App\DataFixtures\Users;
 
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Common\Persistence\ObjectManager;
-use FOS\UserBundle\Model\UserManagerInterface;
+use Doctrine\Persistence\ObjectManager;
+use Dontdrinkandroot\Common\Asserted;
+use Sonata\UserBundle\Entity\UserManager;
 
-/**
- * @author Philip Washington Sorst <philip@sorst.net>
- */
 class UserReadWrite extends Fixture
 {
     const REFERENCE = 'user-read-write';
     const USERNAME = 'userreadwrite';
 
-    /**
-     * @var UserManagerInterface
-     */
-    private $userManager;
+    private UserManager $userManager;
 
-    public function __construct(UserManagerInterface $userManager)
+    public function __construct(UserManager $userManager)
     {
         $this->userManager = $userManager;
     }
@@ -29,12 +25,12 @@ class UserReadWrite extends Fixture
      */
     public function load(ObjectManager $manager)
     {
-        $user = $this->userManager->createUser();
+        $user = Asserted::instanceOf($this->userManager->create(), User::class);
         $user->setUsername(self::USERNAME);
         $user->setEmail($user->getUsername() . '@example.com');
         $user->setPlainPassword($user->getUsername());
         $user->setEnabled(true);
-        $this->userManager->updateUser($user);
+        $this->userManager->save($user);
 
         $this->addReference(self::REFERENCE, $user);
     }

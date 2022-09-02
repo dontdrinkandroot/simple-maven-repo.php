@@ -7,15 +7,12 @@ use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 
-/**
- * @author Philip Washington Sorst <philip@sorst.net>
- */
 class MavenRepositoryGroupAdmin extends AbstractAdmin
 {
     /**
      * {@inheritdoc}
      */
-    protected function configureFormFields(FormMapper $form)
+    protected function configureFormFields(FormMapper $form): void
     {
         $form->with('Basic Information');
         if ($this->isCurrentRoute('create')) {
@@ -41,20 +38,20 @@ class MavenRepositoryGroupAdmin extends AbstractAdmin
     /**
      * {@inheritdoc}
      */
-    protected function configureListFields(ListMapper $list)
+    protected function configureListFields(ListMapper $list): void
     {
         $list->add('shortName');
         $list->add('name');
         $list->add('visible');
 
-        $list->add('_action', null, ['actions' => ['edit' => [], 'delete' => []]]);
+        $list->add(ListMapper::NAME_ACTIONS, null, ['actions' => ['edit' => [], 'delete' => []]]);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function toString($object)
+    public function toString($object): string
     {
-        return $object instanceof MavenRepository ? $object->getName() : 'RepositoryGroup';
+        return $object instanceof MavenRepository ? ($object->getName() ?? 'n/a') : 'RepositoryGroup';
     }
 }

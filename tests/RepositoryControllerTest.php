@@ -11,10 +11,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * @author Philip Washington Sorst <philip@sorst.net>
- */
-class RepositoryControllerTest extends WebTestCase
+class RepositoryControllerTest extends FixtureWebTestCase
 {
     protected function setUp(): void
     {
@@ -25,45 +22,41 @@ class RepositoryControllerTest extends WebTestCase
 
     public function testDownloadNotFound()
     {
-        $client = $this->makeClient();
+        $this->loadClientAndFixtures();
 
-        $client->request(Request::METHOD_GET, '/repos/nonexisting/nonexisting');
+        $this->client->request(Request::METHOD_GET, '/repos/nonexisting/nonexisting');
 
-        $this->assertEquals(Response::HTTP_NOT_FOUND, $client->getResponse()->getStatusCode());
+        self::assertResponseStatusCodeSame(404);
     }
 
     public function testDownloadPublic()
     {
-        $referenceRepository = $this->loadFixtures([MavenRepositorySnapshots::class])->getReferenceRepository();
+        $referenceRepository = $this->loadClientAndFixtures([MavenRepositorySnapshots::class]);
 
-        $client = $this->makeClient();
+        $this->client->request(Request::METHOD_GET, '/repos/snapshots/artifact1/0.1-snapshot');
 
-        $client->request(Request::METHOD_GET, '/repos/snapshots/artifact1/0.1-snapshot');
+        self::assertResponseStatusCodeSame(200);
 
-        $this->assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
-
-        $this->assertInstanceOf(BinaryFileResponse::class, $client->getResponse());
+        $this->assertInstanceOf(BinaryFileResponse::class, $this->client->getResponse());
         /** @var BinaryFileResponse $binaryFileResponse */
-        $binaryFileResponse = $client->getResponse();
+        $binaryFileResponse = $this->client->getResponse();
         $this->assertEquals('snapshots', file_get_contents($binaryFileResponse->getFile()));
     }
 
     public function testUploadNotFound()
     {
-        $client = $this->makeClient();
+        $this->loadClientAndFixtures();
 
-        $client->request(Request::METHOD_POST, '/repos/nonexisting/nonexisting', [], [], [], 'Test');
+        $this->client->request(Request::METHOD_POST, '/repos/nonexisting/nonexisting', [], [], [], 'Test');
 
-        $this->assertEquals(Response::HTTP_NOT_FOUND, $client->getResponse()->getStatusCode());
+        self::assertResponseStatusCodeSame(404);
     }
 
     public function testUploadUnauthorized()
     {
-        $referenceRepository = $this->loadFixtures([MavenRepositorySnapshots::class])->getReferenceRepository();
+        $referenceRepository = $this->loadClientAndFixtures([MavenRepositorySnapshots::class]);
 
-        $client = $this->makeClient();
-
-        $client->request(
+        $this->client->request(
             Request::METHOD_POST,
             '/repos/snapshots/net/dontdrinkandroot/test.pom',
             [],
@@ -72,57 +65,51 @@ class RepositoryControllerTest extends WebTestCase
             'Test'
         );
 
-        $this->assertEquals(Response::HTTP_UNAUTHORIZED, $client->getResponse()->getStatusCode());
+        self::assertResponseStatusCodeSame(401);
     }
 
-    public function testUploadForbidden()
+    public function testUploadForbidden(): void
     {
-        $referenceRepository = $this->loadFixtures(
-            [MavenRepositorySnapshots::class, UserRead::class]
-        )->getReferenceRepository();
+        $this->loadClientAndFixtures([MavenRepositorySnapshots::class, UserRead::class],);
 
-        $client = $this->makeClient(['username' => UserRead::USERNAME, 'password' => UserRead::USERNAME]);
-
-        $client->request(
+        $this->client->request(
             Request::METHOD_POST,
             '/repos/snapshots/net/dontdrinkandroot/test.pom',
             [],
             [],
-            [],
+            ['PHP_AUTH_USER' => UserRead::USERNAME, 'PHP_AUTH_PW' => UserRead::USERNAME],
             'Test'
         );
 
-        $this->assertEquals(Response::HTTP_FORBIDDEN, $client->getResponse()->getStatusCode());
+        self::assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
     public function testUpload()
     {
-        $referenceRepository = $this->loadFixtures(
-            [MavenRepositorySnapshots::class, UserReadWrite::class]
-        )->getReferenceRepository();
+        $referenceRepository = $this->loadClientAndFixtures(
+            [MavenRepositorySnapshots::class, UserReadWrite::class],
+        );
 
-        $client = $this->makeClient(['username' => UserReadWrite::USERNAME, 'password' => UserReadWrite::USERNAME]);
-
-        $client->request(
+        $this->client->request(
             Request::METHOD_POST,
             '/repos/snapshots/net/dontdrinkandroot/test.pom',
             [],
             [],
-            [],
+            ['PHP_AUTH_USER' => UserReadWrite::USERNAME, 'PHP_AUTH_PW' => UserReadWrite::USERNAME],
             'Test'
         );
 
-        $this->assertEquals(Response::HTTP_CREATED, $client->getResponse()->getStatusCode());
+        self::assertResponseStatusCodeSame(Response::HTTP_CREATED);
 
-        $client->request(
+        $this->client->request(
             Request::METHOD_GET,
             '/repos/snapshots/net/dontdrinkandroot/test.pom'
         );
 
-        $this->assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
-        $this->assertInstanceOf(BinaryFileResponse::class, $client->getResponse());
+        $this->assertEquals(Response::HTTP_OK, $this->client->getResponse()->getStatusCode());
+        $this->assertInstanceOf(BinaryFileResponse::class, $this->client->getResponse());
         /** @var BinaryFileResponse $binaryFileResponse */
-        $binaryFileResponse = $client->getResponse();
+        $binaryFileResponse = $this->client->getResponse();
         $this->assertEquals('Test', file_get_contents($binaryFileResponse->getFile()));
     }
 }

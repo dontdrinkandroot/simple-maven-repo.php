@@ -3,16 +3,11 @@
 namespace App\Tests;
 
 use App\DataFixtures\Group\MavenRepositoryGroupPublic;
-use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
-/**
- * @author Philip Washington Sorst <philip@sorst.net>
- */
-class GroupControllerTest extends WebTestCase
+class GroupControllerTest extends FixtureWebTestCase
 {
     protected function setUp(): void
     {
@@ -23,49 +18,43 @@ class GroupControllerTest extends WebTestCase
 
     public function testDownloadPublic()
     {
-        $referenceRepository = $this->loadFixtures([MavenRepositoryGroupPublic::class])->getReferenceRepository();
+        $referenceRepository = $this->loadClientAndFixtures([MavenRepositoryGroupPublic::class]);
 
-        $client = $this->makeClient();
+        $this->client->request(Request::METHOD_GET, '/groups/public/artifact1/0.1-snapshot');
 
-        $client->request(Request::METHOD_GET, '/groups/public/artifact1/0.1-snapshot');
+        self::assertResponseStatusCodeSame(200);
 
-        $this->assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
-
-        $this->assertInstanceOf(BinaryFileResponse::class, $client->getResponse());
+        $this->assertInstanceOf(BinaryFileResponse::class, $this->client->getResponse());
         /** @var BinaryFileResponse $binaryFileResponse */
-        $binaryFileResponse = $client->getResponse();
+        $binaryFileResponse = $this->client->getResponse();
         $this->assertEquals('snapshots', file_get_contents($binaryFileResponse->getFile()));
 
-        $client->request(Request::METHOD_GET, '/groups/public/artifact1/0.1-release');
+        $this->client->request(Request::METHOD_GET, '/groups/public/artifact1/0.1-release');
 
-        $this->assertEquals(Response::HTTP_OK, $client->getResponse()->getStatusCode());
+        self::assertResponseStatusCodeSame(200);
 
-        $this->assertInstanceOf(BinaryFileResponse::class, $client->getResponse());
+        $this->assertInstanceOf(BinaryFileResponse::class, $this->client->getResponse());
         /** @var BinaryFileResponse $binaryFileResponse */
-        $binaryFileResponse = $client->getResponse();
+        $binaryFileResponse = $this->client->getResponse();
         $this->assertEquals('releases', file_get_contents($binaryFileResponse->getFile()));
     }
 
     public function testDownloadMissing()
     {
-        $referenceRepository = $this->loadFixtures([MavenRepositoryGroupPublic::class])->getReferenceRepository();
+        $referenceRepository = $this->loadClientAndFixtures([MavenRepositoryGroupPublic::class]);
 
-        $client = $this->makeClient();
-
-        $client->request(Request::METHOD_GET, '/groups/public/missingartifact/missingfile');
-        $this->assertStatusCode(404, $client);
+        $this->client->request(Request::METHOD_GET, '/groups/public/missingartifact/missingfile');
+        self::assertResponseStatusCodeSame(404);
     }
 
     public function testList()
     {
-        $referenceRepository = $this->loadFixtures([MavenRepositoryGroupPublic::class])->getReferenceRepository();
+        $referenceRepository = $this->loadClientAndFixtures([MavenRepositoryGroupPublic::class]);
 
-        $client = $this->makeClient();
+        $this->client->request(Request::METHOD_GET, '/groups/public/artifact1/');
+        self::assertResponseStatusCodeSame(200);
 
-        $client->request(Request::METHOD_GET, '/groups/public/artifact1/');
-        $this->assertStatusCode(200, $client);
-
-        $client->request(Request::METHOD_GET, '/groups/public/artifact2/');
-        $this->assertStatusCode(200, $client);
+        $this->client->request(Request::METHOD_GET, '/groups/public/artifact2/');
+        self::assertResponseStatusCodeSame(200);
     }
 }

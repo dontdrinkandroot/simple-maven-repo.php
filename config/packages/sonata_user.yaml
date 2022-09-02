@@ -1,8 +1,7 @@
 sonata_user:
-    security_acl: false
-    impersonating:
-        route: sonata_admin_dashboard
-    manager_type: orm
+    resetting:
+        email:
+            address: 'no-reply@example.com'
+            sender_name: 'Simple Maven Repo'
     class:
         user: App\Entity\User
-        group: App\Entity\Group

@@ -1,4 +1,0 @@
-#!/bin/bash
-git pull && \
-composer install && \
-composer outdated -m

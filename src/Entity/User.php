@@ -7,8 +7,6 @@ use Sonata\UserBundle\Entity\BaseUser;
 
 /**
  * @ORM\Entity()
- *
- * @author Philip Washington Sorst <philip@sorst.net>
  */
 class User extends BaseUser
 {

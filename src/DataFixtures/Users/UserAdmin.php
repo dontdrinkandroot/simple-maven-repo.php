@@ -2,23 +2,19 @@
 
 namespace App\DataFixtures\Users;
 
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Common\Persistence\ObjectManager;
-use FOS\UserBundle\Model\UserManagerInterface;
+use Doctrine\Persistence\ObjectManager;
+use Dontdrinkandroot\Common\Asserted;
+use Sonata\UserBundle\Entity\UserManager;
 
-/**
- * @author Philip Washington Sorst <philip@sorst.net>
- */
 class UserAdmin extends Fixture
 {
     const REFERENCE = 'user-admin';
 
-    /**
-     * @var UserManagerInterface
-     */
-    private $userManager;
+    private UserManager $userManager;
 
-    public function __construct(UserManagerInterface $userManager)
+    public function __construct(UserManager $userManager)
     {
         $this->userManager = $userManager;
     }
@@ -28,13 +24,13 @@ class UserAdmin extends Fixture
      */
     public function load(ObjectManager $manager)
     {
-        $user = $this->userManager->createUser();
+        $user = Asserted::instanceOf($this->userManager->create(), User::class);
         $user->setUsername('admin');
         $user->setEmail($user->getUsername() . '@example.com');
         $user->setPlainPassword($user->getUsername());
         $user->setEnabled(true);
         $user->addRole('ROLE_SUPER_ADMIN');
-        $this->userManager->updateUser($user);
+        $this->userManager->save($user);
 
         $this->addReference(self::REFERENCE, $user);
     }
