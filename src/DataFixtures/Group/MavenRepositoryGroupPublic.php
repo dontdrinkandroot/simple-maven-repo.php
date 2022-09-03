@@ -13,16 +13,10 @@ use Doctrine\Persistence\ObjectManager;
 
 class MavenRepositoryGroupPublic extends Fixture implements DependentFixtureInterface
 {
-    const REFERENCE = 'maven-repository-group-public';
+    final const REFERENCE = 'maven-repository-group-public';
 
-    /**
-     * @var MavenRepositoryService
-     */
-    private $mavenRepositoryService;
-
-    public function __construct(MavenRepositoryService $mavenRepositoryService)
+    public function __construct(private readonly MavenRepositoryService $mavenRepositoryService)
     {
-        $this->mavenRepositoryService = $mavenRepositoryService;
     }
 
     /**

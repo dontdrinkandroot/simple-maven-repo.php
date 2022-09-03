@@ -16,20 +16,11 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class MavenRepositoryGroupController extends AbstractController
 {
-    private LoggerInterface $logger;
-
-    private MavenRepositoryGroupService $mavenRepositoryGroupService;
-
-    private SecurityService $securityService;
-
     public function __construct(
-        MavenRepositoryGroupService $mavenRepositoryGroupService,
-        SecurityService $securityService,
-        LoggerInterface $logger
+        private readonly MavenRepositoryGroupService $mavenRepositoryGroupService,
+        private readonly SecurityService $securityService,
+        private readonly LoggerInterface $logger
     ) {
-        $this->logger = $logger;
-        $this->mavenRepositoryGroupService = $mavenRepositoryGroupService;
-        $this->securityService = $securityService;
     }
 
     public function directoryIndex(MavenRepositoryGroup $mavenRepositoryGroup, DirectoryPath $path): Response

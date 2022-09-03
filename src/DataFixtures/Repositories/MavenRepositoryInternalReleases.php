@@ -14,16 +14,10 @@ use Dontdrinkandroot\Path\FilePath;
 
 class MavenRepositoryInternalReleases extends Fixture implements DependentFixtureInterface
 {
-    const REFERENCE = 'maven-repository-internal-releases';
+    final const REFERENCE = 'maven-repository-internal-releases';
 
-    /**
-     * @var MavenRepositoryService
-     */
-    private $mavenRepositoryService;
-
-    public function __construct(MavenRepositoryService $mavenRepositoryService)
+    public function __construct(private readonly MavenRepositoryService $mavenRepositoryService)
     {
-        $this->mavenRepositoryService = $mavenRepositoryService;
     }
 
     /**

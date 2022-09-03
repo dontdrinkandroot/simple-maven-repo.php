@@ -10,15 +10,12 @@ use Sonata\UserBundle\Entity\UserManager;
 
 class UserRead extends Fixture
 {
-    const REFERENCE = 'user-read';
+    final const REFERENCE = 'user-read';
 
-    const USERNAME = 'userread';
+    final const USERNAME = 'userread';
 
-    private UserManager $userManager;
-
-    public function __construct(UserManager $userManager)
+    public function __construct(private readonly UserManager $userManager)
     {
-        $this->userManager = $userManager;
     }
 
     /**

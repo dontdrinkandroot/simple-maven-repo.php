@@ -20,7 +20,7 @@ class MavenRepositoryController extends AbstractController
     public function __construct(
         private readonly MavenRepositoryService $mavenRepositoryService,
         private readonly SecurityService $securityService,
-        private LoggerInterface $logger
+        private readonly LoggerInterface $logger
     ) {
     }
 

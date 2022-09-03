@@ -5,21 +5,20 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Stringable;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity()
  */
-class MavenRepository
+class MavenRepository implements Stringable
 {
     /**
      * @ORM\Id()
      * @ORM\Column(type="integer", nullable=false)
      * @ORM\GeneratedValue(strategy="AUTO")
-     *
-     * @var int
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\Column(type="string", nullable=false, unique=true)
@@ -28,42 +27,36 @@ class MavenRepository
      *     pattern="/^[a-z0-9_-]+$/",
      *     message="Only lowercase letters, numbers, dashes or underscores permitted"
      * )
-     *
-     * @var string
      */
-    private $shortName;
+    private string $shortName;
 
     /**
      * @ORM\Column(type="string", nullable=false)
      * @Assert\NotBlank()
-     *
-     * @var string
      */
-    private $name;
+    private string $name;
 
     /**
      * @ORM\Column(type="boolean", nullable=false)
      * @Assert\NotNull()
-     *
-     * @var bool
      */
-    private $visible = false;
+    private bool $visible = false;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\User")
      * @ORM\JoinTable(name="repository_read_users")
      *
-     * @var User[]|Collection
+     * @var Collection<array-key,User>
      */
-    private $readUsers;
+    private Collection $readUsers;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\User")
      * @ORM\JoinTable(name="repository_write_users")
      *
-     * @var User[]|Collection
+     * @var Collection<array-key,User>
      */
-    private $writeUsers;
+    private Collection $writeUsers;
 
     public function __construct()
     {
@@ -71,57 +64,36 @@ class MavenRepository
         $this->writeUsers = new ArrayCollection();
     }
 
-    /**
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
     public function getShortName(): ?string
     {
         return $this->shortName;
     }
 
-    /**
-     * @param string $shortName
-     */
     public function setShortName(string $shortName): void
     {
         $this->shortName = $shortName;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
     public function setName(string $name): void
     {
         $this->name = $name;
     }
 
-    /**
-     * @return bool
-     */
     public function isVisible(): bool
     {
         return $this->visible;
     }
 
-    /**
-     * @param bool $visible
-     */
     public function setVisible(bool $visible): void
     {
         $this->visible = $visible;
@@ -129,21 +101,21 @@ class MavenRepository
 
     public function isNew()
     {
-        return null === $this->id;
+        return !isset($this->id);
     }
 
     /**
-     * @return User[]|Collection
+     * @return Collection<array-key,User>
      */
-    public function getReadUsers()
+    public function getReadUsers(): Collection
     {
         return $this->readUsers;
     }
 
     /**
-     * @return User[]|Collection
+     * @return Collection<array-key,User>
      */
-    public function getWriteUsers()
+    public function getWriteUsers(): Collection
     {
         return $this->writeUsers;
     }

@@ -22,7 +22,7 @@ class FilePathParamConverter implements ParamConverterInterface
             );
 
             return true;
-        } catch (Exception $e) {
+        } catch (Exception) {
             return false;
         }
     }

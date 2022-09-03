@@ -8,11 +8,8 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class SecurityService
 {
-    private TokenStorageInterface $tokenStorage;
-
-    public function __construct(TokenStorageInterface $tokenStorage)
+    public function __construct(private readonly TokenStorageInterface $tokenStorage)
     {
-        $this->tokenStorage = $tokenStorage;
     }
 
     public function findCurrentUser(): ?User

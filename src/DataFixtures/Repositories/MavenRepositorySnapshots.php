@@ -13,16 +13,10 @@ use Dontdrinkandroot\Path\FilePath;
 
 class MavenRepositorySnapshots extends Fixture implements DependentFixtureInterface
 {
-    const REFERENCE = 'maven-repository-snapshots';
+    final const REFERENCE = 'maven-repository-snapshots';
 
-    /**
-     * @var MavenRepositoryService
-     */
-    private $mavenRepositoryService;
-
-    public function __construct(MavenRepositoryService $mavenRepositoryService)
+    public function __construct(private readonly MavenRepositoryService $mavenRepositoryService)
     {
-        $this->mavenRepositoryService = $mavenRepositoryService;
     }
 
     /**

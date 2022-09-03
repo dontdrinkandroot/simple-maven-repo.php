@@ -9,8 +9,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity()
- *
- * @author Philip Washington Sorst <philip@sorst.net>
  */
 class MavenRepositoryGroup
 {
@@ -18,10 +16,8 @@ class MavenRepositoryGroup
      * @ORM\Id()
      * @ORM\Column(type="integer", nullable=false)
      * @ORM\GeneratedValue(strategy="AUTO")
-     *
-     * @var int
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\Column(type="string", nullable=false, unique=true)
@@ -30,42 +26,36 @@ class MavenRepositoryGroup
      *     pattern="/^[a-z0-9_-]+$/",
      *     message="Only lowercase letters, numbers, dashes or underscores permitted"
      * )
-     *
-     * @var string
      */
-    private $shortName;
+    private string $shortName;
 
     /**
      * @ORM\Column(type="string", nullable=false)
      * @Assert\NotBlank()
-     *
-     * @var string
      */
-    private $name;
+    private string $name;
 
     /**
      * @ORM\Column(type="boolean", nullable=false)
      * @Assert\NotNull()
-     *
-     * @var bool
      */
-    private $visible = false;
+    private bool $visible = false;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\User")
      * @ORM\JoinTable(name="repository_group_read_users")
      *
-     * @var User[]|Collection
+     * @var Collection<array-key,User>
      */
-    private $readUsers;
+    private Collection $readUsers;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\MavenRepository")
      * @ORM\JoinTable(name="repository_group_repositories")
      *
-     * @var MavenRepository[]|Collection
+     * @var Collection<array-key,MavenRepository>
      */
-    private $mavenRepositories;
+    private Collection $mavenRepositories;
 
     public function __construct()
     {
@@ -73,97 +63,76 @@ class MavenRepositoryGroup
         $this->mavenRepositories = new ArrayCollection();
     }
 
-    /**
-     * @return int
-     */
     public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
     public function getShortName(): ?string
     {
         return $this->shortName;
     }
 
-    /**
-     * @param string $shortName
-     */
     public function setShortName(string $shortName): void
     {
         $this->shortName = $shortName;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): ?string
     {
         return $this->name;
     }
 
-    /**
-     * @param string $name
-     */
     public function setName(string $name): void
     {
         $this->name = $name;
     }
 
-    /**
-     * @return bool
-     */
     public function isVisible(): ?bool
     {
         return $this->visible;
     }
 
-    /**
-     * @param bool $visible
-     */
     public function setVisible(bool $visible): void
     {
         $this->visible = $visible;
     }
 
     /**
-     * @return User[]|Collection
+     * @return Collection<array-key,User>
      */
-    public function getReadUsers()
+    public function getReadUsers(): Collection
     {
         return $this->readUsers;
     }
 
     /**
-     * @param User[]|Collection $readUsers
+     * @param Collection<array-key,User> $readUsers
      */
-    public function setReadUsers($readUsers): void
+    public function setReadUsers(Collection $readUsers): void
     {
         $this->readUsers = $readUsers;
     }
 
     /**
-     * @return MavenRepository[]|Collection
+     * @return Collection<array-key,MavenRepository>
      */
-    public function getMavenRepositories()
+    public function getMavenRepositories(): Collection
     {
         return $this->mavenRepositories;
     }
 
     /**
-     * @param MavenRepository[]|Collection $mavenRepositories
+     * @param Collection<array-key,MavenRepository> $mavenRepositories
      */
-    public function setMavenRepositories($mavenRepositories): void
+    public function setMavenRepositories(Collection $mavenRepositories): void
     {
         $this->mavenRepositories = $mavenRepositories;
     }
 
     public function isNew()
     {
-        return null === $this->id;
+        return !isset($this->id);
     }
 
     public function addReadUser(User $user)

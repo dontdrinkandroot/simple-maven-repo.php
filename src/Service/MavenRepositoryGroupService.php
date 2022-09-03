@@ -10,16 +10,10 @@ use Dontdrinkandroot\Path\FilePath;
 
 class MavenRepositoryGroupService
 {
-    private MavenRepositoryService $mavenRepositoryService;
-
-    private MavenRepositoryGroupRepository $mavenRepositoryGroupRepository;
-
     public function __construct(
-        MavenRepositoryGroupRepository $mavenRepositoryGroupRepository,
-        MavenRepositoryService $mavenRepositoryService
+        private readonly MavenRepositoryGroupRepository $mavenRepositoryGroupRepository,
+        private readonly MavenRepositoryService $mavenRepositoryService
     ) {
-        $this->mavenRepositoryService = $mavenRepositoryService;
-        $this->mavenRepositoryGroupRepository = $mavenRepositoryGroupRepository;
     }
 
     public function readGranted(
