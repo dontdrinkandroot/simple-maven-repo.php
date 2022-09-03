@@ -20,12 +20,12 @@ class MavenRepositoryGroupService
         MavenRepositoryGroup $mavenRepositoryGroup,
         ?User $user
     ): bool {
-        if (!$mavenRepositoryGroup->isVisible() && !$mavenRepositoryGroup->getReadUsers()->contains($user)) {
+        if (!$mavenRepositoryGroup->visible && !$mavenRepositoryGroup->readUsers->contains($user)) {
             return false;
         }
 
-        foreach ($mavenRepositoryGroup->getMavenRepositories() as $mavenRepository) {
-            if (!$mavenRepository->isVisible() && !$mavenRepository->getReadUsers()->contains($user)) {
+        foreach ($mavenRepositoryGroup->mavenRepositories as $mavenRepository) {
+            if (!$mavenRepository->visible && !$mavenRepository->readUsers->contains($user)) {
                 return false;
             }
         }
@@ -38,7 +38,7 @@ class MavenRepositoryGroupService
         DirectoryPath $path
     ) {
         $directories = [];
-        foreach ($mavenRepositoryGroup->getMavenRepositories() as $mavenRepository) {
+        foreach ($mavenRepositoryGroup->mavenRepositories as $mavenRepository) {
             if ($this->mavenRepositoryService->hasDirectory($mavenRepository, $path)) {
                 foreach ($this->mavenRepositoryService->listDirectories($mavenRepository, $path) as $directory) {
                     if (!in_array($directory, $directories)) {
@@ -56,7 +56,7 @@ class MavenRepositoryGroupService
         DirectoryPath $path
     ) {
         $files = [];
-        foreach ($mavenRepositoryGroup->getMavenRepositories() as $mavenRepository) {
+        foreach ($mavenRepositoryGroup->mavenRepositories as $mavenRepository) {
             if ($this->mavenRepositoryService->hasDirectory($mavenRepository, $path)) {
                 foreach ($this->mavenRepositoryService->listFiles($mavenRepository, $path) as $file) {
                     if (!in_array($file, $files)) {
@@ -73,7 +73,7 @@ class MavenRepositoryGroupService
         MavenRepositoryGroup $mavenRepositoryGroup,
         FilePath $path
     ): ?string {
-        foreach ($mavenRepositoryGroup->getMavenRepositories() as $mavenRepository) {
+        foreach ($mavenRepositoryGroup->mavenRepositories as $mavenRepository) {
             if ($this->mavenRepositoryService->hasFile($mavenRepository, $path)) {
                 return $this->mavenRepositoryService->getFilename($mavenRepository, $path);
             }

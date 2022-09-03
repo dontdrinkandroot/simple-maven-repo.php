@@ -32,14 +32,15 @@ class MavenRepositorySnapshots extends Fixture implements DependentFixtureInterf
      */
     public function load(ObjectManager $manager)
     {
-        $mavenRepository = new MavenRepository();
-        $mavenRepository->setShortName('snapshots');
-        $mavenRepository->setName('Snapshots');
-        $mavenRepository->setVisible(true);
+        $mavenRepository = new MavenRepository(
+            shortName: 'snapshots',
+            name: 'Snapshots',
+            visible: true,
+        );
 
         /** @var User $userRW */
         $userRW = $this->getReference(UserReadWrite::REFERENCE);
-        $mavenRepository->addWriteUser($userRW);
+        $mavenRepository->writeUsers->add($userRW);
 
         $manager->persist($mavenRepository);
         $manager->flush();

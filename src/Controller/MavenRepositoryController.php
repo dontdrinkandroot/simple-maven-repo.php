@@ -50,7 +50,7 @@ class MavenRepositoryController extends AbstractController
             throw new AccessDeniedException();
         }
 
-        $this->logger->info(sprintf('Download, repo: %s, path: %s', $mavenRepository->getShortName(), (string)$path));
+        $this->logger->info(sprintf('Download, repo: %s, path: %s', $mavenRepository->shortName, (string)$path));
 
         if (!$this->mavenRepositoryService->hasFile($mavenRepository, $path)) {
             throw new NotFoundHttpException();
@@ -69,7 +69,7 @@ class MavenRepositoryController extends AbstractController
         }
 
         $this->logger->info(
-            sprintf('Upload, repo: %s, path: %s', $mavenRepository->getShortName(), (string)$path)
+            sprintf('Upload, repo: %s, path: %s', $mavenRepository->shortName, (string)$path)
         );
 
         $this->mavenRepositoryService->storeFile($mavenRepository, $path, $request->getContent(true));

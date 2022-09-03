@@ -6,7 +6,6 @@ use App\DataFixtures\Repositories\MavenRepositoryReleases;
 use App\DataFixtures\Repositories\MavenRepositorySnapshots;
 use App\Entity\MavenRepository;
 use App\Entity\MavenRepositoryGroup;
-use App\Service\MavenRepositoryService;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -15,7 +14,7 @@ class MavenRepositoryGroupPublic extends Fixture implements DependentFixtureInte
 {
     final const REFERENCE = 'maven-repository-group-public';
 
-    public function __construct(private readonly MavenRepositoryService $mavenRepositoryService)
+    public function __construct()
     {
     }
 
@@ -32,18 +31,19 @@ class MavenRepositoryGroupPublic extends Fixture implements DependentFixtureInte
      */
     public function load(ObjectManager $manager)
     {
-        $mavenRepositoryGroup = new MavenRepositoryGroup();
-        $mavenRepositoryGroup->setShortName('public');
-        $mavenRepositoryGroup->setName('Public');
-        $mavenRepositoryGroup->setVisible(true);
+        $mavenRepositoryGroup = new MavenRepositoryGroup(
+            shortName: 'public',
+            name: 'Public',
+            visible: true
+        );
 
         /** @var MavenRepository $releases */
         $releases = $this->getReference(MavenRepositoryReleases::REFERENCE);
         /** @var MavenRepository $snapshots */
         $snapshots = $this->getReference(MavenRepositorySnapshots::REFERENCE);
 
-        $mavenRepositoryGroup->addMavenRepository($releases);
-        $mavenRepositoryGroup->addMavenRepository($snapshots);
+        $mavenRepositoryGroup->mavenRepositories->add($releases);
+        $mavenRepositoryGroup->mavenRepositories->add($snapshots);
 
         $manager->persist($mavenRepositoryGroup);
         $manager->flush();

@@ -22,7 +22,7 @@ class MavenRepositoryService
         $this->filesystem = new Filesystem();
     }
 
-    public function storeFile(MavenRepository $mavenRepository, FilePath $path, $resource)
+    public function storeFile(MavenRepository $mavenRepository, FilePath $path, $resource): void
     {
         $fileName = $this->getFilename($mavenRepository, $path);
         $directory = dirname($fileName);
@@ -49,21 +49,21 @@ class MavenRepositoryService
 
     public function getFilename(MavenRepository $mavenRepository, Path $path): string
     {
-        return $this->storageRoot . '/' . $mavenRepository->getShortName() . '/' . $path->toRelativeFileSystemString();
+        return $this->storageRoot . '/' . $mavenRepository->shortName . '/' . $path->toRelativeFileSystemString();
     }
 
     public function readGranted(MavenRepository $mavenRepository, ?User $user = null): bool
     {
-        if ($mavenRepository->isVisible()) {
+        if ($mavenRepository->visible) {
             return true;
         }
 
-        return $mavenRepository->getReadUsers()->contains($user);
+        return $mavenRepository->readUsers->contains($user);
     }
 
     public function writeGranted(MavenRepository $mavenRepository, User $user): bool
     {
-        return $mavenRepository->getWriteUsers()->contains($user);
+        return $mavenRepository->writeUsers->contains($user);
     }
 
     public function listReadableRepositories(?User $user = null): array

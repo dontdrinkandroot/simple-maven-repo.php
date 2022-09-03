@@ -5,143 +5,50 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Stringable;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity()
- */
-class MavenRepositoryGroup
+#[ORM\Entity]
+class MavenRepositoryGroup implements Stringable
 {
-    /**
-     * @ORM\Id()
-     * @ORM\Column(type="integer", nullable=false)
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private int $id;
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer', nullable: false)]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
+    public readonly int $id;
 
-    /**
-     * @ORM\Column(type="string", nullable=false, unique=true)
-     * @Assert\NotBlank()
-     * @Assert\Regex(
-     *     pattern="/^[a-z0-9_-]+$/",
-     *     message="Only lowercase letters, numbers, dashes or underscores permitted"
-     * )
-     */
-    private string $shortName;
+    /** @var Collection<array-key,User> */
+    #[ORM\JoinTable(name: 'repository_group_read_users')]
+    #[ORM\ManyToMany(targetEntity: User::class)]
+    public Collection $readUsers;
 
-    /**
-     * @ORM\Column(type="string", nullable=false)
-     * @Assert\NotBlank()
-     */
-    private string $name;
+    /** @var Collection<array-key,MavenRepository> */
+    #[ORM\JoinTable(name: 'repository_group_repositories')]
+    #[ORM\ManyToMany(targetEntity: MavenRepository::class)]
+    public Collection $mavenRepositories;
 
-    /**
-     * @ORM\Column(type="boolean", nullable=false)
-     * @Assert\NotNull()
-     */
-    private bool $visible = false;
+    public function __construct(
+        #[ORM\Column(type: 'string', unique: true, nullable: false)]
+        #[Assert\NotBlank]
+        #[Assert\Regex(pattern: '/^[a-z0-9_-]+$/', message: 'Only lowercase letters, numbers, dashes or underscores permitted')]
+        public string $shortName,
 
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\User")
-     * @ORM\JoinTable(name="repository_group_read_users")
-     *
-     * @var Collection<array-key,User>
-     */
-    private Collection $readUsers;
+        #[ORM\Column(type: 'string', nullable: false)]
+        #[Assert\NotBlank]
+        public string $name,
 
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\MavenRepository")
-     * @ORM\JoinTable(name="repository_group_repositories")
-     *
-     * @var Collection<array-key,MavenRepository>
-     */
-    private Collection $mavenRepositories;
-
-    public function __construct()
-    {
+        #[ORM\Column(type: 'boolean', nullable: false)]
+        #[Assert\NotNull]
+        public bool $visible = false
+    ) {
         $this->readUsers = new ArrayCollection();
         $this->mavenRepositories = new ArrayCollection();
     }
 
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    public function getShortName(): ?string
-    {
-        return $this->shortName;
-    }
-
-    public function setShortName(string $shortName): void
-    {
-        $this->shortName = $shortName;
-    }
-
-    public function getName(): ?string
+    /**
+     * {@inheritdoc}
+     */
+    public function __toString(): string
     {
         return $this->name;
-    }
-
-    public function setName(string $name): void
-    {
-        $this->name = $name;
-    }
-
-    public function isVisible(): ?bool
-    {
-        return $this->visible;
-    }
-
-    public function setVisible(bool $visible): void
-    {
-        $this->visible = $visible;
-    }
-
-    /**
-     * @return Collection<array-key,User>
-     */
-    public function getReadUsers(): Collection
-    {
-        return $this->readUsers;
-    }
-
-    /**
-     * @param Collection<array-key,User> $readUsers
-     */
-    public function setReadUsers(Collection $readUsers): void
-    {
-        $this->readUsers = $readUsers;
-    }
-
-    /**
-     * @return Collection<array-key,MavenRepository>
-     */
-    public function getMavenRepositories(): Collection
-    {
-        return $this->mavenRepositories;
-    }
-
-    /**
-     * @param Collection<array-key,MavenRepository> $mavenRepositories
-     */
-    public function setMavenRepositories(Collection $mavenRepositories): void
-    {
-        $this->mavenRepositories = $mavenRepositories;
-    }
-
-    public function isNew()
-    {
-        return !isset($this->id);
-    }
-
-    public function addReadUser(User $user)
-    {
-        $this->readUsers->add($user);
-    }
-
-    public function addMavenRepository(MavenRepository $mavenRepository)
-    {
-        $this->mavenRepositories->add($mavenRepository);
     }
 }

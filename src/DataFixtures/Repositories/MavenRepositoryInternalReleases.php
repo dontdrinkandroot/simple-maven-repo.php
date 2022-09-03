@@ -33,19 +33,20 @@ class MavenRepositoryInternalReleases extends Fixture implements DependentFixtur
      */
     public function load(ObjectManager $manager)
     {
-        $mavenRepository = new MavenRepository();
-        $mavenRepository->setShortName('internalreleases');
-        $mavenRepository->setName('Internal Releases');
-        $mavenRepository->setVisible(false);
+        $mavenRepository = new MavenRepository(
+            shortName: 'internalreleases',
+            name: 'Internal Releases',
+            visible: false,
+        );
 
         /** @var User $userR */
         $userR = $this->getReference(UserRead::REFERENCE);
-        $mavenRepository->addReadUser($userR);
+        $mavenRepository->readUsers->add($userR);
 
         /** @var User $userRW */
         $userRW = $this->getReference(UserReadWrite::REFERENCE);
-        $mavenRepository->addReadUser($userRW);
-        $mavenRepository->addWriteUser($userRW);
+        $mavenRepository->readUsers->add($userRW);
+        $mavenRepository->writeUsers->add($userRW);
 
         $manager->persist($mavenRepository);
         $manager->flush();

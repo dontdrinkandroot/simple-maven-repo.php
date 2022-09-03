@@ -32,14 +32,15 @@ class MavenRepositoryReleases extends Fixture implements DependentFixtureInterfa
      */
     public function load(ObjectManager $manager)
     {
-        $mavenRepository = new MavenRepository();
-        $mavenRepository->setShortName('releases');
-        $mavenRepository->setName('Releases');
-        $mavenRepository->setVisible(true);
+        $mavenRepository = new MavenRepository(
+            shortName: 'releases',
+            name: 'Releases',
+            visible: true
+        );
 
         /** @var User $userRW */
         $userRW = $this->getReference(UserReadWrite::REFERENCE);
-        $mavenRepository->addWriteUser($userRW);
+        $mavenRepository->writeUsers->add($userRW);
 
         $manager->persist($mavenRepository);
         $manager->flush();

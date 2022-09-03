@@ -5,17 +5,12 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Sonata\UserBundle\Entity\BaseUser;
 
-/**
- * @ORM\Entity()
- */
+#[ORM\Entity]
 class User extends BaseUser
 {
-    /**
-     * @ORM\Id()
-     * @ORM\Column(type="integer", nullable=false)
-     * @ORM\GeneratedValue(strategy="AUTO")
-     *
-     * @var int
-     */
+    /** @var int */
+    #[ORM\Id]
+    #[ORM\Column(type: 'integer', nullable: false)]
+    #[ORM\GeneratedValue(strategy: 'AUTO')]
     protected $id;
 }

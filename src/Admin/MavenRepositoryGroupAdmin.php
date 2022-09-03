@@ -52,6 +52,6 @@ class MavenRepositoryGroupAdmin extends AbstractAdmin
      */
     public function toString($object): string
     {
-        return $object instanceof MavenRepository ? ($object->getName() ?? 'n/a') : 'RepositoryGroup';
+        return $object instanceof MavenRepository ? $object->name : 'RepositoryGroup';
     }
 }

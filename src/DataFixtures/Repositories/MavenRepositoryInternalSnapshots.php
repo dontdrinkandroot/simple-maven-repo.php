@@ -33,19 +33,20 @@ class MavenRepositoryInternalSnapshots extends Fixture implements DependentFixtu
      */
     public function load(ObjectManager $manager)
     {
-        $mavenRepository = new MavenRepository();
-        $mavenRepository->setShortName('internalsnapshots');
-        $mavenRepository->setName('Internal Snapshots');
-        $mavenRepository->setVisible(false);
+        $mavenRepository = new MavenRepository(
+            shortName: 'internalsnapshots',
+            name: 'Internal Snapshots',
+            visible: false
+        );
 
         /** @var User $userR */
         $userR = $this->getReference(UserRead::REFERENCE);
-        $mavenRepository->addReadUser($userR);
+        $mavenRepository->readUsers->add($userR);
 
         /** @var User $userRW */
         $userRW = $this->getReference(UserReadWrite::REFERENCE);
-        $mavenRepository->addReadUser($userRW);
-        $mavenRepository->addWriteUser($userRW);
+        $mavenRepository->readUsers->add($userRW);
+        $mavenRepository->writeUsers->add($userRW);
 
         $manager->persist($mavenRepository);
         $manager->flush();

@@ -56,7 +56,7 @@ class MavenRepositoryGroupController extends AbstractController
         }
 
         $this->logger->info(
-            sprintf('Download, repo: %s, path: %s', $mavenRepositoryGroup->getShortName(), (string)$path)
+            sprintf('Download, repo: %s, path: %s', $mavenRepositoryGroup->shortName, (string)$path)
         );
 
         $filename = $this->mavenRepositoryGroupService->getFilename($mavenRepositoryGroup, $path);
