@@ -10,6 +10,7 @@ use Dontdrinkandroot\Path\FilePath;
 use Dontdrinkandroot\Path\Path;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 
 class MavenRepositoryService
 {
@@ -22,6 +23,9 @@ class MavenRepositoryService
         $this->filesystem = new Filesystem();
     }
 
+    /**
+     * @param string|resource $resource
+     */
     public function storeFile(MavenRepository $mavenRepository, FilePath $path, $resource): void
     {
         $fileName = $this->getFilename($mavenRepository, $path);
@@ -58,7 +62,7 @@ class MavenRepositoryService
             return true;
         }
 
-        return $mavenRepository->readUsers->contains($user);
+        return null !== $user && $mavenRepository->readUsers->contains($user);
     }
 
     public function writeGranted(MavenRepository $mavenRepository, User $user): bool
@@ -71,7 +75,10 @@ class MavenRepositoryService
         return $this->mavenRepositoryRepository->listReadableRepositories($user);
     }
 
-    public function listDirectories(MavenRepository $mavenRepository, DirectoryPath $path)
+    /**
+     * @return iterable<string, SplFileInfo>
+     */
+    public function listDirectories(MavenRepository $mavenRepository, DirectoryPath $path): iterable
     {
         $directory = $this->getFilename($mavenRepository, $path);
         $finder = new Finder();
@@ -79,7 +86,10 @@ class MavenRepositoryService
         return $finder->in($directory)->directories()->depth(0);
     }
 
-    public function listFiles(MavenRepository $mavenRepository, DirectoryPath $path)
+    /**
+     * @return iterable<string, SplFileInfo>
+     */
+    public function listFiles(MavenRepository $mavenRepository, DirectoryPath $path): iterable
     {
         $directory = $this->getFilename($mavenRepository, $path);
         $finder = new Finder();

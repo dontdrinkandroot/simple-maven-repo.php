@@ -20,7 +20,7 @@ class UserReadWrite extends Fixture
     /**
      * {@inheritdoc}
      */
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $user = Asserted::instanceOf($this->userManager->create(), User::class);
         $user->setUsername(self::USERNAME);

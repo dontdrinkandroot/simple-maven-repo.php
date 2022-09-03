@@ -22,7 +22,7 @@ class MavenRepositorySnapshots extends Fixture implements DependentFixtureInterf
     /**
      * {@inheritdoc}
      */
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [UserReadWrite::class];
     }
@@ -30,7 +30,7 @@ class MavenRepositorySnapshots extends Fixture implements DependentFixtureInterf
     /**
      * {@inheritdoc}
      */
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $mavenRepository = new MavenRepository(
             shortName: 'snapshots',

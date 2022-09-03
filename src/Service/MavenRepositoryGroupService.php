@@ -20,12 +20,18 @@ class MavenRepositoryGroupService
         MavenRepositoryGroup $mavenRepositoryGroup,
         ?User $user
     ): bool {
-        if (!$mavenRepositoryGroup->visible && !$mavenRepositoryGroup->readUsers->contains($user)) {
+        if (
+            !$mavenRepositoryGroup->visible
+            && (null === $user || !$mavenRepositoryGroup->readUsers->contains($user))
+        ) {
             return false;
         }
 
         foreach ($mavenRepositoryGroup->mavenRepositories as $mavenRepository) {
-            if (!$mavenRepository->visible && !$mavenRepository->readUsers->contains($user)) {
+            if (
+                !$mavenRepository->visible
+                && (null === $user || !$mavenRepository->readUsers->contains($user))
+            ) {
                 return false;
             }
         }
@@ -36,12 +42,12 @@ class MavenRepositoryGroupService
     public function listDirectories(
         MavenRepositoryGroup $mavenRepositoryGroup,
         DirectoryPath $path
-    ) {
+    ): array {
         $directories = [];
         foreach ($mavenRepositoryGroup->mavenRepositories as $mavenRepository) {
             if ($this->mavenRepositoryService->hasDirectory($mavenRepository, $path)) {
                 foreach ($this->mavenRepositoryService->listDirectories($mavenRepository, $path) as $directory) {
-                    if (!in_array($directory, $directories)) {
+                    if (!in_array($directory, $directories, true)) {
                         $directories[] = $directory;
                     }
                 }
@@ -54,7 +60,7 @@ class MavenRepositoryGroupService
     public function listFiles(
         MavenRepositoryGroup $mavenRepositoryGroup,
         DirectoryPath $path
-    ) {
+    ): array {
         $files = [];
         foreach ($mavenRepositoryGroup->mavenRepositories as $mavenRepository) {
             if ($this->mavenRepositoryService->hasDirectory($mavenRepository, $path)) {
@@ -82,7 +88,7 @@ class MavenRepositoryGroupService
         return null;
     }
 
-    public function listReadableGroups(?User $user)
+    public function listReadableGroups(?User $user): array
     {
         return $this->mavenRepositoryGroupRepository->listReadableGroups($user);
     }

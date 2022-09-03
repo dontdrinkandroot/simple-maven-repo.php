@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <psalm
-        errorLevel="4"
+        errorLevel="2"
         resolveFromConfigFile="true"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns="https://getpsalm.org/schema/config"
@@ -12,4 +12,15 @@
             <directory name="vendor" />
         </ignoreFiles>
     </projectFiles>
+
+    <issueHandlers>
+        <PropertyNotSetInConstructor>
+            <errorLevel type="suppress">
+                <referencedProperty name="Symfony\Bundle\FrameworkBundle\Controller\AbstractController::$container" />
+                <referencedProperty name="Doctrine\Common\DataFixtures\AbstractFixture::$referenceRepository" />
+                <referencedProperty name="App\Entity\MavenRepository::$id" />
+                <referencedProperty name="App\Entity\MavenRepositoryGroup::$id" />
+            </errorLevel>
+        </PropertyNotSetInConstructor>
+    </issueHandlers>
 </psalm>

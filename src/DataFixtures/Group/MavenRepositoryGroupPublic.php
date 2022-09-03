@@ -21,7 +21,7 @@ class MavenRepositoryGroupPublic extends Fixture implements DependentFixtureInte
     /**
      * {@inheritdoc}
      */
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [MavenRepositoryReleases::class, MavenRepositorySnapshots::class];
     }
@@ -29,7 +29,7 @@ class MavenRepositoryGroupPublic extends Fixture implements DependentFixtureInte
     /**
      * {@inheritdoc}
      */
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $mavenRepositoryGroup = new MavenRepositoryGroup(
             shortName: 'public',

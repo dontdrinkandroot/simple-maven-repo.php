@@ -23,7 +23,7 @@ class MavenRepositoryInternalReleases extends Fixture implements DependentFixtur
     /**
      * {@inheritdoc}
      */
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [UserRead::class, UserReadWrite::class];
     }
@@ -31,7 +31,7 @@ class MavenRepositoryInternalReleases extends Fixture implements DependentFixtur
     /**
      * {@inheritdoc}
      */
-    public function load(ObjectManager $manager)
+    public function load(ObjectManager $manager): void
     {
         $mavenRepository = new MavenRepository(
             shortName: 'internalreleases',
