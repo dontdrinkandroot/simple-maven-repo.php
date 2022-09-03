@@ -3,6 +3,7 @@
 namespace App\Request\ParamConverter;
 
 use Dontdrinkandroot\Path\FilePath;
+use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,7 +16,7 @@ class FilePathParamConverter implements ParamConverterInterface
     /**
      * {@inheritdoc}
      */
-    public function apply(Request $request, ParamConverter $configuration)
+    public function apply(Request $request, ParamConverter $configuration): bool
     {
         try {
             $request->attributes->set(
@@ -24,7 +25,7 @@ class FilePathParamConverter implements ParamConverterInterface
             );
 
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
     }
@@ -32,7 +33,7 @@ class FilePathParamConverter implements ParamConverterInterface
     /**
      * {@inheritdoc}
      */
-    public function supports(ParamConverter $configuration)
+    public function supports(ParamConverter $configuration): bool
     {
         return FilePath::class === $configuration->getClass();
     }

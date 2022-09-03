@@ -16,7 +16,7 @@ class DirectoryPathParamConverter implements ParamConverterInterface
     /**
      * {@inheritdoc}
      */
-    public function apply(Request $request, ParamConverter $configuration)
+    public function apply(Request $request, ParamConverter $configuration): bool
     {
         try {
             $request->attributes->set(
@@ -33,7 +33,7 @@ class DirectoryPathParamConverter implements ParamConverterInterface
     /**
      * {@inheritdoc}
      */
-    public function supports(ParamConverter $configuration)
+    public function supports(ParamConverter $configuration): bool
     {
         return DirectoryPath::class === $configuration->getClass();
     }
