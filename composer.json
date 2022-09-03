@@ -1,4 +1,6 @@
 {
+    "name": "dontdrinkandoot/simple-maven-repo",
+    "description": "Minimalistic maven repository",
     "type": "project",
     "license": "proprietary",
     "minimum-stability": "stable",
