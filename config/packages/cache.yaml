@@ -19,5 +19,6 @@ framework:
         #my.dedicated.cache: null
 
 when@prod:
-    cache:
-        app: cache.adapter.apcu
+    framework:
+        cache:
+            app: cache.adapter.apcu
