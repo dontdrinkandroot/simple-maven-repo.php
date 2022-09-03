@@ -8,9 +8,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-/**
- * @author Philip Washington Sorst <philip@sorst.net>
- */
 class DirectoryPathParamConverter implements ParamConverterInterface
 {
     /**

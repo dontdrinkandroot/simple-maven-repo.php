@@ -8,9 +8,6 @@ use App\Repository\MavenRepositoryGroupRepository;
 use Dontdrinkandroot\Path\DirectoryPath;
 use Dontdrinkandroot\Path\FilePath;
 
-/**
- * @author Philip Washington Sorst <philip@sorst.net>
- */
 class MavenRepositoryGroupService
 {
     private MavenRepositoryService $mavenRepositoryService;

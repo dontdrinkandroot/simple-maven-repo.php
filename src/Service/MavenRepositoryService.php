@@ -11,9 +11,6 @@ use Dontdrinkandroot\Path\Path;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
-/**
- * @author Philip Washington Sorst <philip@sorst.net>
- */
 class MavenRepositoryService
 {
     private MavenRepositoryRepository $mavenRepositoryRepository;
