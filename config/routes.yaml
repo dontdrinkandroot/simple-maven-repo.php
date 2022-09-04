@@ -2,10 +2,14 @@ index:
     path: /
     controller: App\Controller\IndexController::index
 
+app.health:
+    path: /health
+    controller: App\Controller\HealthAction
+
 repo_directory_index:
     path: /repos/{shortName}{path}
     controller: App\Controller\MavenRepositoryController::directoryIndex
-    methods: [GET]
+    methods: [ GET ]
     requirements:
         shortName: '^[a-z0-9-_]+$'
         path: '/(.*/)?'
