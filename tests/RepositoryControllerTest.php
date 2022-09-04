@@ -5,7 +5,6 @@ namespace App\Tests;
 use App\DataFixtures\Repositories\MavenRepositorySnapshots;
 use App\DataFixtures\Users\UserRead;
 use App\DataFixtures\Users\UserReadWrite;
-use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
