@@ -46,12 +46,10 @@ security:
             provider: sonata_user_bundle
 
     access_control:
-#        - { path: ^/admin/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
-#        - { path: ^/admin/logout$, role: IS_AUTHENTICATED_ANONYMOUSLY }
-#        - { path: ^/admin/login_check$, role: IS_AUTHENTICATED_ANONYMOUSLY }
-#        - { path: ^/admin/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
-#        - { path: ^/admin/, role: [ROLE_ADMIN, ROLE_SONATA_ADMIN] }
-#        - { path: ^/.*, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/admin/security/, role: PUBLIC_ACCESS }
+        - { path: ^/admin/reset/, role: PUBLIC_ACCESS }
+        - { path: ^/admin/, role: [ ROLE_ADMIN ] }
+        - { path: ^/.*, role: PUBLIC_ACCESS }
 
 when@test:
     security:
