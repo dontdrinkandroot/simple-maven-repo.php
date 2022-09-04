@@ -44,3 +44,7 @@ services:
     App\Service\MavenRepositoryService:
         arguments:
             $storageRoot: '%env(resolve:STORAGE_ROOT)%'
+
+    App\Controller\IndexController:
+        arguments:
+            $applicationName: '%env(APPLICATION_NAME)%'

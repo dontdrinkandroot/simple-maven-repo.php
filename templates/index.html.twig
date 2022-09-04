@@ -1,9 +1,9 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}maven.dontdrinkandroot.net{% endblock title %}
+{% block title %}{{ applicationName }}{% endblock title %}
 
 {% block body %}
-    <h1>maven.dontdrinkandroot.net</h1>
+    <h1>{{ applicationName }}</h1>
     <h2>Repositories</h2>
     <ul>
         {% for mavenRepository in mavenRepositories %}

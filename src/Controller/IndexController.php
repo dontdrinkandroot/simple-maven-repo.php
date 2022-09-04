@@ -13,21 +13,20 @@ class IndexController extends AbstractController
     public function __construct(
         private readonly SecurityService $securityService,
         private readonly MavenRepositoryService $mavenRepositoryService,
-        private readonly MavenRepositoryGroupService $mavenRepositoryGroupService
+        private readonly MavenRepositoryGroupService $mavenRepositoryGroupService,
+        private readonly string $applicationName
     ) {
     }
 
     public function index(): Response
     {
+        $user = $this->securityService->findCurrentUser();
         return $this->render(
             'index.html.twig',
             [
-                'mavenRepositories' => $this->mavenRepositoryService->listReadableRepositories(
-                    $this->securityService->findCurrentUser()
-                ),
-                'mavenRepositoryGroups' => $this->mavenRepositoryGroupService->listReadableGroups(
-                    $this->securityService->findCurrentUser()
-                )
+                'applicationName'       => $this->applicationName,
+                'mavenRepositories'     => $this->mavenRepositoryService->listReadableRepositories($user),
+                'mavenRepositoryGroups' => $this->mavenRepositoryGroupService->listReadableGroups($user)
             ]
         );
     }
